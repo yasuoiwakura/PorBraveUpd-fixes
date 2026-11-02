@@ -25,6 +25,9 @@ namespace Brave_Updater
             MinimizeBox = false;
             ClientSize = new Size(580, 320);
 
+            string edition = string.IsNullOrEmpty(settings.Edition) ? "stable:x64" : settings.Edition;
+            string updateName = PortableAppsIntegration.FormatUpdateEntryName(settings);
+
             var intro = new Label
             {
                 AutoSize = false,
@@ -46,7 +49,7 @@ namespace Brave_Updater
                 AutoSize = false,
                 Location = new Point(12, 82),
                 Size = new Size(300, 20),
-                Text = "For the selected build: stable:x64"
+                Text = "For the selected build: " + edition
             };
 
             includeLauncher = new CheckBox
@@ -61,7 +64,7 @@ namespace Brave_Updater
             {
                 AutoSize = true,
                 Location = new Point(28, 134),
-                Text = "Brave (newest stable)",
+                Text = updateName,
                 Checked = settings.IncludeUpdater
             };
 
@@ -80,7 +83,7 @@ namespace Brave_Updater
                 AutoSize = false,
                 Location = new Point(12, 174),
                 Size = new Size(550, 55),
-                Text = "PortableApps cannot reliably track Brave or close it with the Platform. 'Brave (newest stable)' is experimental."
+                Text = "PortableApps cannot reliably track Brave or close it with the Platform. '" + updateName + "' is experimental."
             };
 
             writeButton = new Button

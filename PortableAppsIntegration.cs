@@ -295,7 +295,7 @@ namespace Brave_Updater
             }
             if (settings.IncludeUpdater)
             {
-                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (newest stable)", "selected", "Update Brave, then start Brave"));
+                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", FormatUpdateEntryName(settings), "selected", "Update Brave, then start Brave"));
             }
 
             return entries;
@@ -309,6 +309,25 @@ namespace Brave_Updater
             }
 
             return edition.Replace(":", ", ");
+        }
+
+        internal static string FormatUpdateEntryName(PortableAppsSettings settings)
+        {
+            string edition = settings == null ? null : settings.Edition;
+            string channel = string.IsNullOrEmpty(edition) ? "stable" : edition;
+            int separator = channel.IndexOf(':');
+            if (separator >= 0)
+            {
+                channel = channel.Substring(0, separator);
+            }
+
+            channel = channel.Trim().ToLowerInvariant();
+            if (channel.Length == 0)
+            {
+                channel = "stable";
+            }
+
+            return "Brave (newest " + channel + ")";
         }
 
         private static int GetIconCount(PortableAppsSettings settings)
