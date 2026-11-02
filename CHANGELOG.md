@@ -2,6 +2,31 @@
 
 All notable changes to this fork.
 
+## 1.3.3.337 - 2026-11-02
+
+PortableApps integration and runtime-dependency release.
+
+### Added
+
+- PortableApps integration dialog: generates `appinfo.ini`, icons, no-space start/update batches and a settings file with backup of existing files.
+- Transparent runtime dependency preflight for GUI and CLI. Missing files are reported by exact path before download or extraction.
+
+### Changed
+
+- Updater version is `1.3.3.337`.
+- Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
+- The static `PortableAppsUpdate.bat` was removed. The app now generates `PortableAppsUpdate-stable-x64.bat` and `PortableAppsStart-stable-x64.bat`.
+- PortableApps icons use the Brave icon for the launcher entries and the updater icon for the update entry.
+
+### Validation
+
+- Local build and CLI preflight tests passed. Platform entry tests remain manual.
+
+### Notes
+
+- No code signing; self-update without hash verification.
+- Release asset: `Portable.Brave.Updater.v1.3.3.337.7z`.
+
 ## 1.3.3.37 - 2026-11-02
 
 CLI release for the fork.
@@ -15,7 +40,6 @@ CLI release for the fork.
 - Optional log file and wait-for-Brave handling.
 - `--launch-brave` support for the existing launcher with fallback to `Brave.exe`.
 - Batch test scripts `update_and_close.bat` and `update_and_run_brave.bat` included in the package.
-- PortableApps integration dialog: generates `appinfo.ini`, icons, no-space start/update batches and a settings file with backup of existing files.
 
 ### Changed
 

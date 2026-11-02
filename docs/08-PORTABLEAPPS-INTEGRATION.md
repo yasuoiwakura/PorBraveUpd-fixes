@@ -36,6 +36,8 @@ The generated `appinfo.ini` uses:
 
 Background: `appinfo.ini` `Start` is treated as a file path by the Platform. It does not parse quoted paths or arguments, so the generated no-space batches are required.
 
+Live deployment on 2026-11-02 uses updater `1.3.3.337`. The generated `appinfo.ini` has `PackageVersion=1.3.3.337` and `DisplayVersion=1.3.3.337`. Backup before deployment: `PortableApps-backup-20261102-203535-975`; previous EXE backup: `Portable Brave Updater.exe.bak-20261102-203535`.
+
 ### 1.2 Earlier manual prototype
 
 A minimal metadata-only PAF wrapper was created in the live folder:

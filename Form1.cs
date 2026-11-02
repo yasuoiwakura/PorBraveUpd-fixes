@@ -367,6 +367,11 @@ namespace Brave_Updater
         }
         private async Task Testing()
         {
+            if (ShowRuntimeDependencyError(GetMissingRuntimeFiles(null)))
+            {
+                return;
+            }
+
             if ((!Directory.Exists(@"Brave Nightly x86")) && (!Directory.Exists(@"Brave Dev x86")) && (!Directory.Exists(@"Brave Beta x86")) && (!Directory.Exists(@"Brave Stable x86")))
             {
                 if (checkBox1.Checked)
@@ -401,8 +406,119 @@ namespace Brave_Updater
                 await NewMethod2(7, 7, 1, 8);
             }
         }
+        private List<string> GetMissingRuntimeFiles(IEnumerable<string> launcherNames)
+        {
+            var missing = new List<string>();
+            if (!File.Exists(Path.Combine(applicationPath, "Bin", "7zr.exe")))
+            {
+                missing.Add(@"Bin\7zr.exe");
+            }
+
+            if (launcherNames != null)
+            {
+                foreach (string launcherName in launcherNames)
+                {
+                    if (string.IsNullOrEmpty(launcherName))
+                    {
+                        continue;
+                    }
+
+                    string target = Path.Combine(applicationPath, launcherName);
+                    string source = Path.Combine(applicationPath, "Bin", "Launcher", launcherName);
+                    string display = @"Bin\Launcher\" + launcherName;
+                    if (!File.Exists(target) && !File.Exists(source) && !missing.Contains(display))
+                    {
+                        missing.Add(display);
+                    }
+                }
+            }
+
+            return missing;
+        }
+
+        private string FormatMissingRuntimeFiles(IEnumerable<string> missing)
+        {
+            var items = new List<string>(missing);
+            string list = string.Join(Environment.NewLine, items.ConvertAll(item => "- " + item).ToArray());
+            string newLine = Environment.NewLine;
+
+            switch (culture1.TwoLetterISOLanguageName)
+            {
+                case "de":
+                    return "Erforderliche Dateien fehlen:" + newLine + newLine + list + newLine + newLine
+                        + "Bitte das vollständige Portable-Brave-Updater-Paket verwenden." + newLine
+                        + "Die EXE allein reicht nicht.";
+                default:
+                    return "Required files are missing:" + newLine + newLine + list + newLine + newLine
+                        + "Please use the full Portable Brave Updater package." + newLine
+                        + "The EXE alone is not sufficient.";
+            }
+        }
+
+        private bool ShowRuntimeDependencyError(IEnumerable<string> missing)
+        {
+            if (missing == null)
+            {
+                return false;
+            }
+
+            var items = new List<string>(missing);
+            if (items.Count == 0)
+            {
+                return false;
+            }
+
+            string message = FormatMissingRuntimeFiles(items);
+            if (Headless)
+            {
+                throw new InvalidOperationException(message);
+            }
+
+            MessageBox.Show(message, "Portable Brave Updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return true;
+        }
+
+        private void RunSevenZip(string arguments)
+        {
+            string sevenZip = Path.Combine(applicationPath, "Bin", "7zr.exe");
+            if (!File.Exists(sevenZip))
+            {
+                throw new FileNotFoundException("Required file is missing: Bin\\7zr.exe", sevenZip);
+            }
+
+            Process process = new Process();
+            process.StartInfo.FileName = sevenZip;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+            process.StartInfo.Arguments = arguments;
+            process.Start();
+            process.WaitForExit();
+        }
+
+        private void CopyLauncherIfNeeded(string launcherName)
+        {
+            string target = Path.Combine(applicationPath, launcherName);
+            if (File.Exists(target))
+            {
+                return;
+            }
+
+            string source = Path.Combine(applicationPath, "Bin", "Launcher", launcherName);
+            if (!File.Exists(source))
+            {
+                throw new FileNotFoundException("Required file is missing: Bin\\Launcher\\" + launcherName, source);
+            }
+
+            File.Copy(source, target);
+        }
+
         public async Task DownloadFile(int a, int b, int c, int d)
         {
+            List<string> missing = GetMissingRuntimeFiles(new string[] { instDir[b] + " Launcher.exe" });
+            if (ShowRuntimeDependencyError(missing))
+            {
+                return;
+            }
+
             cliUpdateError = null;
             GroupBox progressBox = new GroupBox
             {
@@ -509,16 +625,8 @@ namespace Brave_Updater
                                         downloadLabel.Text = "Unpacking";
                                         break;
                                 }
-                                string arguments = " x " + "Brave_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
-                                Process process = new Process();
-                                process.StartInfo.FileName = @"Bin\7zr.exe";
-                                process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                                process.StartInfo.Arguments = arguments;
-                                process.Start();
-                                process.WaitForExit();
-                                process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\Chrome.7z -o" + @"Update\" + entpDir[b] + " -y";
-                                process.Start();
-                                process.WaitForExit();
+                                RunSevenZip(" x " + "Brave_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y");
+                                RunSevenZip(" x " + @"Update\" + entpDir[b] + "\\Chrome.7z -o" + @"Update\" + entpDir[b] + " -y");
                                 if ((File.Exists(@"Update\" + entpDir[b] + "\\chrome-bin\\Brave.exe")) && (File.Exists(instDir[b] + "\\updates\\Version.log")))
                                 {
                                     string[] instVersion = File.ReadAllText(instDir[b] + "\\updates\\Version.log").Split(new char[] { '|' });
@@ -574,10 +682,7 @@ namespace Brave_Updater
                             {
                                 NewMethod5(a, b);
                             }
-                            if (!File.Exists(@instDir[b] + " Launcher.exe"))
-                            {
-                                File.Copy(@"Bin\Launcher\" + instDir[b] + " Launcher.exe", @instDir[b] + " Launcher.exe");
-                            }
+                            CopyLauncherIfNeeded(instDir[b] + " Launcher.exe");
                             File.Delete("Brave_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
                             switch (culture1.TwoLetterISOLanguageName)
                             {
@@ -1126,6 +1231,11 @@ namespace Brave_Updater
             }
             void UpdateButton_Click(object sender, EventArgs e)
             {
+                if (ShowRuntimeDependencyError(GetMissingRuntimeFiles(null)))
+                {
+                    return;
+                }
+
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var request2 = (WebRequest)HttpWebRequest.Create(RawMasterUrl + "/Version.txt");
                 var response2 = request2.GetResponse();
@@ -1176,12 +1286,7 @@ namespace Brave_Updater
                                 myWebClient2.DownloadFile(RawMasterUrl + "/Launcher/Launcher.7z", @"Launcher.7z");
                             }
                             string arguments = " x " + @"Launcher.7z" + " -o" + @"Bin\\Launcher" + " -y";
-                            Process process = new Process();
-                            process.StartInfo.FileName = @"Bin\7zr.exe";
-                            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                            process.StartInfo.Arguments = arguments;
-                            process.Start();
-                            process.WaitForExit();
+                            RunSevenZip(arguments);
                             File.Delete(@"Launcher.7z");
                             foreach (string launcher in instDir)
                             {

@@ -9,7 +9,7 @@ The fork started as an exact copy of the upstream repository. It now contains lo
 - Upstream last commit: 2022.
 - Upstream has 6 open issues, including SSL/TLS and failed-update reports.
 - The fork is public and MIT-licensed.
-- The fork currently targets the updater at `1.3.3.37` and the launchers at `1.3.3.7`.
+- The fork currently targets the updater at `1.3.3.337` and the launchers at `1.3.3.7`.
 
 ## 2. Technical structure
 
