@@ -65,7 +65,7 @@ Planned core features:
 - Updater version: 1.3.37
 - Build: successful (2026-11-02)
 - Local release package: `dist/Portable.Brave.Updater.v1.3.37.7z`
-- GitHub Actions: `build`, `ci`, `release`; dev builds are artifacts
+- GitHub Actions: `build`, `ci` (PR/manual), `nightly` (changed `dev` only) and `release`; dev builds are artifacts
 - CLI implementation: done (MVP)
 - CLI smoke tests: `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave` (2026-11-02)
 - Batch test scripts included in the package: `update_and_close.bat`, `update_and_run_brave.bat`

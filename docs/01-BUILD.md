@@ -217,10 +217,23 @@ Workflows:
 | File | Trigger | Purpose |
 |---|---|---|
 | `.github/workflows/build.yml` | `workflow_call` | Reusable build, packaging, artifacts |
-| `.github/workflows/ci.yml` | Push to `master`/`dev`, PR, manual | CI build without release |
+| `.github/workflows/ci.yml` | PR, manual | CI build without release |
+| `.github/workflows/nightly.yml` | Daily 03:00 UTC, manual | Dev build only when `dev` changed |
 | `.github/workflows/release.yml` | Tags `v*` | Stable GitHub release |
 
-`dev-latest.yml` no longer exists. Dev builds are published as timestamped Actions artifacts, not GitHub Releases.
+`dev-latest.yml` no longer exists. Dev builds are published as timestamped Actions artifacts, not GitHub Releases. Pushes to `master` and `dev` do not start a build automatically.
+
+Nightly behavior:
+
+- schedule is `03:00 UTC`; GitHub may delay scheduled runs
+- checks out `dev`
+- skips if a `v*` tag points at the current commit
+- skips if the last successful `nightly` run has the same commit SHA
+- `workflow_dispatch` can force a build with `force=true`
+
+If the `ci` workflow is disabled in the GitHub Actions UI, the separate `nightly` workflow and its manual button remain available.
+
+`build.yml` accepts optional `ref` and `channel` inputs. Nightly passes `ref=dev` and `channel=dev`.
 
 `build.yml` flow:
 
@@ -244,8 +257,8 @@ Artifacts:
 
 | Branch/event | Artifact |
 |---|---|
-| `dev` push or manual run on `dev` | `portable-brave-updater-dev-<YYYYMMDD-HHMMSSZ>-<sha>` |
-| `master`, PR, release tag | `portable-brave-updater` |
+| Nightly `dev` build | `portable-brave-updater-dev-<YYYYMMDD-HHMMSSZ>-<sha>` |
+| PR, release tag | `portable-brave-updater` |
 
 Dev artifact:
 
