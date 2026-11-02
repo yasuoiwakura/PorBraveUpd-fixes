@@ -78,15 +78,16 @@ Keep the current entry model:
 
 - `Portable Brave Updater`
 - `Brave`
-- `Brave (updated)`
+- `Brave (newest stable)`
 
 Use `DescriptionN` for the Brave entries:
 
 - `Brave`: `stable, x64`
-- `Brave (updated)`: `Update Brave, then start Brave`
+- `Brave (newest stable)`: `Update Brave, then start Brave`
 
-The updater entry keeps the updater version. Do not derive a Brave version into
-the package metadata; that creates unnecessary coupling.
+Do not derive a Brave version into the package metadata; that creates
+unnecessary coupling. `PackageVersion` remains for installer/update purposes;
+`DisplayVersion` is optional and intentionally omitted in the current metadata.
 
 ### 3.2 Launcher configuration
 

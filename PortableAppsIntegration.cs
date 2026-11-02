@@ -258,9 +258,8 @@ namespace Brave_Updater
             builder.AppendLine("EULAVersion=1");
             builder.AppendLine();
             builder.AppendLine("[Version]");
-            builder.AppendLine("PackageVersion=" + version);
-            builder.AppendLine("DisplayVersion=" + version);
-            builder.AppendLine();
+                builder.AppendLine("PackageVersion=" + version);
+                builder.AppendLine();
             string mainStart = settings.IncludeLauncher
                 ? "PortableAppsStart-stable-x64.bat"
                 : (settings.IncludeUpdaterApp
@@ -296,7 +295,7 @@ namespace Brave_Updater
             }
             if (settings.IncludeUpdater)
             {
-                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (updated)", "selected", "Update Brave, then start Brave"));
+                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (newest stable)", "selected", "Update Brave, then start Brave"));
             }
 
             return entries;

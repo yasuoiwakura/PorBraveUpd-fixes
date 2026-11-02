@@ -61,7 +61,7 @@ namespace Brave_Updater
             {
                 AutoSize = true,
                 Location = new Point(28, 134),
-                Text = "Brave (updated)",
+                Text = "Brave (newest stable)",
                 Checked = settings.IncludeUpdater
             };
 
@@ -80,7 +80,7 @@ namespace Brave_Updater
                 AutoSize = false,
                 Location = new Point(12, 174),
                 Size = new Size(550, 55),
-                Text = "PortableApps cannot reliably track Brave or close it with the Platform. 'Brave (updated)' is experimental."
+                Text = "PortableApps cannot reliably track Brave or close it with the Platform. 'Brave (newest stable)' is experimental."
             };
 
             writeButton = new Button
