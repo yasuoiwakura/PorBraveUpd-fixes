@@ -1,56 +1,56 @@
-# 02 - CLI-Spezifikation
+# 02 - CLI Specification
 
-Stand: 2026-11-02  
-Status: verbindlich fuer die Implementierung
+Last updated: 2026-11-02  
+Status: authoritative for implementation
 
-## 1. Ziel
+## 1. Goal
 
-Der Updater soll ohne Mausklick bedienbar werden:
+The updater should be usable without mouse interaction:
 
-- als automatischer Update-Job,
-- als Vor-Launcher, der aktualisiert und danach Brave startet,
-- als reiner Check fuer Monitoring.
+- as an automated update job,
+- as a pre-launcher that updates and then starts Brave,
+- as a check-only tool for monitoring.
 
-Die bestehende GUI bleibt fuer normale Nutzer erhalten.
+The existing GUI remains available for normal users.
 
-## 2. Grundsaetze
+## 2. Principles
 
-- GNU/POSIX-Stil: Long-Options mit `--`, keine `/`-Switches.
-- Optionsnamen und Werte werden case-insensitiv verglichen.
-- `--option=value` und `--option value` sind gleichwertig.
-- `--` trennt Updater-Optionen von Argumenten, die an Brave weitergegeben werden.
-- Keine interaktiven Dialoge im nicht-interaktiven Modus.
-- Klare Exit-Codes.
-- Idempotenz: Ein zweiter Lauf ohne neue Version aendert nichts.
-- `--check` und `--dry-run` laden keine Installer herunter.
+- GNU/POSIX style: long options with `--`, no `/` switches.
+- Option names and values are compared case-insensitively.
+- `--option=value` and `--option value` are equivalent.
+- `--` separates updater options from arguments passed to Brave.
+- No interactive dialogs in non-interactive mode.
+- Clear exit codes.
+- Idempotence: a second run without a new version changes nothing.
+- `--check` and `--dry-run` do not download installers.
 
-## 3. Aufrufsyntax
+## 3. Syntax
 
 ```text
-Portable Brave Updater.exe [Optionen] [-- Brave-Argumente...]
+Portable Brave Updater.exe [options] [-- Brave arguments...]
 ```
 
-### Optionen
+### Options
 
-| Option | Wert | Default | Bedeutung |
+| Option | Value | Default | Meaning |
 |---|---|---|---|
-| `--update` | `existing` oder `all` | `existing` | Update-Scope |
-| `--launch-brave` | optional `channel:arch` | aus | Nach Erfolg Brave starten |
-| `--quit-after` | - | aus | Nach Abschluss beenden |
-| `--if-new` | - | an | Nur bei neuerer Version aktualisieren |
-| `--force` | - | aus | Auch gleiche Version neu installieren |
-| `--check` | - | aus | Nur pruefen, nichts installieren |
-| `--dry-run` | - | aus | Plan anzeigen, nichts installieren |
-| `--quiet` | - | aus | Keine GUI/Dialoge, Log auf stdout/stderr |
-| `--log` | Pfad | aus | Zusaetzlich in Datei loggen |
-| `--wait-for-brave` | - | aus | Bei laufendem Brave warten |
-| `--timeout` | Sekunden | `300` | Max. Wartezeit fuer `--wait-for-brave` |
-| `--help` | - | - | Hilfe ausgeben, Exit 0 |
-| `--version` | - | - | Version ausgeben, Exit 0 |
+| `--update` | `existing` or `all` | `existing` | Update scope |
+| `--launch-brave` | optional `channel:arch` | off | Start Brave after success |
+| `--quit-after` | - | off | Exit after completion |
+| `--if-new` | - | on | Update only when a newer version exists |
+| `--force` | - | off | Reinstall even if the same version is installed |
+| `--check` | - | off | Check only, do not install |
+| `--dry-run` | - | off | Show plan, do not install |
+| `--quiet` | - | off | No GUI/dialogs, log to stdout/stderr |
+| `--log` | path | off | Also write to a log file |
+| `--wait-for-brave` | - | off | Wait while Brave is running |
+| `--timeout` | seconds | `300` | Maximum wait for `--wait-for-brave` |
+| `--help` | - | - | Print help, exit 0 |
+| `--version` | - | - | Print version, exit 0 |
 
-### Tolerante Schreibweisen
+### Accepted variants
 
-Akzeptiert:
+Accepted:
 
 ```text
 --update=existing
@@ -63,7 +63,7 @@ Akzeptiert:
 --timeout 120
 ```
 
-Nicht akzeptiert:
+Not accepted:
 
 ```text
 /updateall
@@ -72,126 +72,126 @@ Nicht akzeptiert:
 --timeout
 ```
 
-`--update` ohne Wert ist ein Syntaxfehler (Exit 2). Wenn `--update` gar nicht angegeben wird, gilt `existing`.
+`--update` without a value is a syntax error (exit 2). If `--update` is not specified, `existing` applies.
 
-## 4. Semantik
+## 4. Semantics
 
-### 4.1 `--update=existing` (Default)
+### 4.1 `--update=existing` (default)
 
-- Ermittelt alle bereits installierten Editionen.
-- Eine Edition gilt als installiert, wenn `Brave <Edition>\updates\Version.log` oder `Brave <Edition>\Brave.exe` existiert.
-- Fuer jede installierte Edition wird die aktuelle Brave-Version geprueft.
-- Ist eine neuere Version verfuegbar, wird sie heruntergeladen und installiert.
-- Fehlende Editionen werden **nicht** installiert.
-- Wenn keine Edition installiert ist: keine Aktion, Exit 0, Logmeldung.
+- Finds all installed editions.
+- An edition is considered installed if `Brave <Edition>\updates\Version.log` or `Brave <Edition>\Brave.exe` exists.
+- The current Brave version is checked for each installed edition.
+- If a newer version is available, it is downloaded and installed.
+- Missing editions are **not** installed.
+- If no edition is installed: no action, exit 0, log message.
 
-Empfohlen fuer Scheduled Tasks und wiederkehrende Update-Jobs.
+Recommended for scheduled tasks and recurring update jobs.
 
 ### 4.2 `--update=all`
 
-- Alle unterstuetzten Editionen werden sichergestellt und aktualisiert.
-- Auf einem 64-Bit-Windows: Nightly, Dev, Beta, Stable jeweils x86 und x64.
-- Auf einem 32-Bit-Windows: nur die x86-Editionen.
-- Fehlende Editionen werden installiert, vorhandene aktualisiert.
-- Achtung: Das kann mehrere hundert MB bis ueber 1 GB herunterladen.
+- Ensures and updates all supported editions.
+- On 64-bit Windows: Nightly, Dev, Beta and Stable for both x86 and x64.
+- On 32-bit Windows: only x86 editions.
+- Missing editions are installed; existing editions are updated.
+- Warning: this can download several hundred MB up to more than 1 GB.
 
-Empfohlen fuer die Erstinstallation oder den Wunsch "alles aktuell halten".
+Recommended for first-time installation or "keep everything current".
 
-### 4.3 `--if-new` und `--force`
+### 4.3 `--if-new` and `--force`
 
-- Default ist `--if-new`: Eine Edition wird nur aktualisiert, wenn die vom Server gemeldete Version neuer ist als die lokale `Version.log`.
-- `--force`: Installiert auch dann neu, wenn dieselbe Version bereits lokal vorhanden ist. Entspricht der bisherigen Option "Versionkontrolle ignorieren".
-- `--if-new` und `--force` gleichzeitig: Syntaxfehler (Exit 2).
+- Default is `--if-new`: an edition is updated only if the server-reported version is newer than the local `Version.log`.
+- `--force`: reinstalls even if the same version is already installed. Equivalent to the previous "ignore version check" option.
+- `--if-new` and `--force` together: syntax error (exit 2).
 
 ### 4.4 `--launch-brave`
 
-Startet nach erfolgreichem Update die passende Brave-Edition. Ohne Update startet es die einzige installierte Edition.
+Starts the matching Brave edition after a successful update. Without an update, it starts the only installed edition.
 
-Auswahlreihenfolge:
+Selection order:
 
-1. Explizite Angabe `--launch-brave=channel:arch`.
-2. Genau eine Edition wurde in diesem Lauf aktualisiert.
-3. Genau eine Edition ist installiert.
-4. Sonst: keine eindeutige Auswahl. Kein Start, Exit 6, Logmeldung mit Hinweis auf `--launch-brave=channel:arch`.
+1. Explicit `--launch-brave=channel:arch`.
+2. Exactly one edition was updated in this run.
+3. Exactly one edition is installed.
+4. Otherwise: no unique selection. Do not start, exit 6, log a hint to use `--launch-brave=channel:arch`.
 
-Startreihenfolge:
+Start order:
 
-1. Bevorzugt: `Brave <Channel> <Arch> Launcher.exe` im Updater-Verzeichnis.
-2. Wenn `Profile.txt` fuer die Edition existiert: Launcher ohne Argumente starten.
-3. Wenn `Profile.txt` fehlt: `Brave.exe` direkt starten mit `--user-data-dir="<Edition>\profile"`.
-4. Wenn der Launcher fehlt: `Brave.exe` direkt starten.
+1. Preferred: `Brave <Channel> <Arch> Launcher.exe` in the updater directory.
+2. If `Profile.txt` exists for the edition: start the launcher without arguments.
+3. If `Profile.txt` is missing: start `Brave.exe` directly with `--user-data-dir="<Edition>\profile"`.
+4. If the launcher is missing: start `Brave.exe` directly.
 
-Der Updater wartet nicht auf Brave. Nach `Process.Start` kehrt er zurueck.
+The updater does not wait for Brave. It returns after `Process.Start`.
 
-Argumente nach `--` werden an den gestarteten Prozess weitergegeben:
+Arguments after `--` are passed to the started process:
 
 ```powershell
 Portable Brave Updater.exe --update=existing --launch-brave=stable:x64 -- --incognito https://example.org
 ```
 
-`--launch-brave` ist mit `--check` und `--dry-run` nicht kombinierbar (Exit 2).
+`--launch-brave` cannot be combined with `--check` or `--dry-run` (exit 2).
 
 ### 4.5 `--quit-after`
 
-- Beendet den Updater nach Abschluss der Operation, auch bei Fehlern.
-- In Kombination mit `--quiet` oder `--check` ist der Prozess ohnehin nicht-interaktiv und beendet sich; `--quit-after` ist dann redundant, aber erlaubt.
-- Ohne `--quit-after` und ohne `--quiet` kann die GUI nach dem Update sichtbar bleiben.
+- Exits the updater after the operation, including on errors.
+- With `--quiet` or `--check`, the process is already non-interactive and exits; `--quit-after` is then redundant but allowed.
+- Without `--quit-after` and without `--quiet`, the GUI may remain visible after the update.
 
 ### 4.6 `--check`
 
-- Prueft nur Versionen und Installationsstatus.
-- Kein Download, keine Installation.
-- Exit 5, wenn mindestens eine Aktion moeglich waere.
-- Exit 0, wenn alles aktuell ist.
-- Exit 4 bei Netzwerk-/Serverfehler.
-- Mit `--update=all` werden auch fehlende Editionen als "installierbar" gemeldet.
+- Checks versions and installation status only.
+- No download, no installation.
+- Exit 5 if at least one action would be possible.
+- Exit 0 if everything is current.
+- Exit 4 on network/server error.
+- With `--update=all`, missing editions are also reported as installable.
 
 ### 4.7 `--dry-run`
 
-- Fuehrt die Versionspruefung aus.
-- Gibt aus, welche Editionen aktualisiert oder installiert wuerden.
-- Kein Download, keine Installation.
-- Exit-Codes wie `--check`.
+- Runs the version check.
+- Prints which editions would be updated or installed.
+- No download, no installation.
+- Exit codes as with `--check`.
 
 ### 4.8 `--quiet`
 
-- Keine Fenster, keine MessageBoxen.
-- Fortschritt und Ergebnisse auf stdout.
-- Fehler auf stderr.
-- Impliziert nicht-interaktiven Modus und automatisches Beenden.
-- `--log` bleibt zusaetzlich moeglich.
+- No windows, no message boxes.
+- Progress and results on stdout.
+- Errors on stderr.
+- Implies non-interactive mode and automatic exit.
+- `--log` remains available.
 
-### 4.9 `--log <pfad>`
+### 4.9 `--log <path>`
 
-- Schreibt Logzeilen mit Zeitstempel in die angegebene Datei.
-- Verzeichnis muss existieren; sonst Exit 2.
-- Fehler werden immer zusaetzlich auf stderr ausgegeben.
-- Empfehlung: `--log "logs\updater.log"`.
+- Writes log lines with timestamps to the given file.
+- The directory must exist; otherwise exit 2.
+- Errors are always also written to stderr.
+- Recommended: `--log "logs\updater.log"`.
 
-### 4.10 `--wait-for-brave` und `--timeout`
+### 4.10 `--wait-for-brave` and `--timeout`
 
-- Wenn ein `Brave`-Prozess laeuft:
-  - Interaktiv: bisherige MessageBox.
-  - Mit `--quiet` ohne `--wait-for-brave`: sofort Exit 3.
-  - Mit `--wait-for-brave`: warten, bis Brave beendet ist, maximal `--timeout` Sekunden.
-- Timeout abgelaufen: Exit 3.
-- `--timeout` ohne `--wait-for-brave`: Syntaxfehler (Exit 2).
+- If a `Brave` process is running:
+  - Interactive: existing message box.
+  - With `--quiet` without `--wait-for-brave`: exit 3 immediately.
+  - With `--wait-for-brave`: wait until Brave exits, up to `--timeout` seconds.
+- Timeout expired: exit 3.
+- `--timeout` without `--wait-for-brave`: syntax error (exit 2).
 
-## 5. Exit-Codes
+## 5. Exit codes
 
-| Code | Bedeutung |
+| Code | Meaning |
 |---|---|
-| 0 | Erfolg oder keine Aktion noetig |
-| 1 | Allgemeiner Fehler |
-| 2 | Ungueltige Argumente / Syntaxfehler |
-| 3 | Brave laeuft noch / Wartezeit abgelaufen |
-| 4 | Netzwerk-, Server- oder Versionspruefungsfehler |
-| 5 | Update oder Installation verfuegbar (`--check`/`--dry-run`) |
-| 6 | Launch fehlgeschlagen oder Edition nicht eindeutig |
+| 0 | Success or no action required |
+| 1 | General error |
+| 2 | Invalid arguments / syntax error |
+| 3 | Brave still running / wait timed out |
+| 4 | Network, server or version-check error |
+| 5 | Update or installation available (`--check`/`--dry-run`) |
+| 6 | Launch failed or edition not unique |
 
-## 6. Ausgabe
+## 6. Output
 
-Beispiele fuer stdout:
+Example stdout:
 
 ```text
 [2026-11-02 12:00:00] Update scope: existing
@@ -202,64 +202,64 @@ Beispiele fuer stdout:
 [2026-11-02 12:02:10] Launch: Brave Stable x64 Launcher.exe
 ```
 
-Fehlerbeispiel:
+Error example:
 
 ```text
 [2026-11-02 12:00:00] ERROR: Network error while checking Stable:x64
 ```
 
-## 7. Beispiele
+## 7. Examples
 
 ```powershell
-# Standard: nur installierte Editionen aktualisieren, danach beenden
+# Default: update installed editions, then exit
 Portable Brave Updater.exe --update=existing --quit-after
 
-# Alle Editionen installieren/aktualisieren, leise, mit Log
+# Install/update all editions, quiet, with log
 Portable Brave Updater.exe --update=all --quiet --log "logs\update-all.log"
 
-# Nur pruefen, fuer Monitoring
+# Check only, for monitoring
 Portable Brave Updater.exe --check --quiet
 
-# Aktualisieren und Stable x64 starten
+# Update and start Stable x64
 Portable Brave Updater.exe --update=existing --launch-brave=stable:x64
 
-# Automatischer Start der einzigen installierten Edition
+# Automatically start the only installed edition
 Portable Brave Updater.exe --update=existing --launch-brave --quit-after
 
-# Brave-Argumente durchreichen
+# Pass Brave arguments
 Portable Brave Updater.exe --update=existing --launch-brave=stable:x64 -- --incognito
 ```
 
-## 8. Abnahmekriterien
+## 8. Acceptance criteria
 
-- `--update=existing` installiert keine fehlende Edition.
-- `--update=all` installiert fehlende Editionen und aktualisiert vorhandene.
-- `--update all` verhaelt sich wie `--update=all`.
-- Ohne `--update` gilt `existing`.
-- `--check` und `--dry-run` laden keine Installer herunter.
-- `--quiet` erzeugt keine MessageBox und keine sichtbare GUI.
-- `--quit-after` beendet den Prozess nach Abschluss.
-- `--launch-brave` startet bei genau einer installierten Edition den Launcher.
-- Bei mehreren installierten Editionen und ohne explizite Auswahl: Exit 6.
-- `--launch-brave=stable:x64` startet gezielt diese Edition.
-- `--`-Argumente werden an Brave weitergegeben.
-- Exit-Codes entsprechen der Tabelle.
-- Der interaktive GUI-Modus funktioniert unveraendert.
+- `--update=existing` does not install a missing edition.
+- `--update=all` installs missing editions and updates existing ones.
+- `--update all` behaves like `--update=all`.
+- Without `--update`, `existing` applies.
+- `--check` and `--dry-run` do not download installers.
+- `--quiet` produces no message box and no visible GUI.
+- `--quit-after` exits the process after completion.
+- `--launch-brave` starts the launcher when exactly one edition is installed.
+- With multiple installed editions and no explicit selection: exit 6.
+- `--launch-brave=stable:x64` starts that edition specifically.
+- `--` arguments are passed to Brave.
+- Exit codes match the table.
+- The interactive GUI mode works unchanged.
 
-## 9. Nicht-Ziele (MVP)
+## 9. Non-goals (MVP)
 
-- Windows-Autostart registrieren.
-- GUI-Neudesign.
-- Umschreiben der Launcher.
-- Self-Update im headless Modus.
-- JSON-Ausgabe.
-- Parallele Updates mehrerer Editionen.
-- Signaturpruefung der Brave-Installer (spaeter).
+- Register Windows autostart.
+- GUI redesign.
+- Rewrite the launchers.
+- Self-update in headless mode.
+- JSON output.
+- Parallel updates of multiple editions.
+- Signature verification of Brave installers (later).
 
-## 10. Spaetere Erweiterungen
+## 10. Future extensions
 
-- `--edition=stable:x64` zum gezielten Aktualisieren einer Edition.
-- `--json` fuer Monitoring.
+- `--edition=stable:x64` to update one specific edition.
+- `--json` for monitoring.
 - `--register-autostart` / `--unregister-autostart`.
-- `--verify-signature` fuer heruntergeladene Installer.
-- `--no-self-update` als explizite Option, falls Self-Update wieder aktiviert wird.
+- `--verify-signature` for downloaded installers.
+- `--no-self-update` as an explicit option if self-update is re-enabled.
