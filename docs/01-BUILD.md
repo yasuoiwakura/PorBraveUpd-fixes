@@ -260,6 +260,7 @@ Release:
 - laedt `.7z` und `SHA256SUMS.txt` hoch
 - kein automatisches Commit von `Version.txt`
 - Der Tag muss auf `master` zeigen; der Updater liest `Version.txt` von `master`.
+- Release Notes werden aus `docs/RELEASE-NOTES-<Version>.md` gelesen, falls vorhanden.
 - Der Workflow erscheint in der Actions-Liste erst, wenn `release.yml` auf dem Default-Branch `master` liegt und/oder ein Tag `v*` gepusht wurde.
 
 Hinweis: `windows-latest` bringt VS 2022 und .NET Framework 4.8 in der Regel mit. Der Workflow prueft das explizit und bricht sonst mit einer klaren Meldung ab.

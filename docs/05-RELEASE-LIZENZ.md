@@ -140,7 +140,7 @@ Wichtig:
 - [ ] Optional: EXE mit Authenticode signieren.
 - [ ] GitHub Release mit Tag und Asset erstellen.
 - [ ] Tag zeigt auf `master`; `Version.txt` auf `master` ist aktuell.
-- [ ] Release-Notes schreiben.
+- [ ] Release-Notes unter `docs/RELEASE-NOTES-<Version>.md` anlegen.
 - [ ] `Version.txt` nur fuer stabile Releases aktualisieren.
 - [ ] Dev-Builds nur als zeitgestempeltes Actions-Artefakt veroeffentlichen; `Version.txt` unveraendert lassen.
 - [ ] Self-Update-Pfad testen, falls aktiviert.

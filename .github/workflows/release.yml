@@ -52,6 +52,12 @@ jobs:
         shell: pwsh
         run: |
           $tag = "${{ github.ref_name }}"
+          $tagVersion = $tag.Substring(1)
           $archive = Get-ChildItem -LiteralPath "dist" -Filter "Portable.Brave.Updater.v*.7z" | Select-Object -First 1
-          gh release create $tag $archive.FullName "dist/SHA256SUMS.txt" --title "Portable Brave Updater $tag" --notes "Release $tag" --verify-tag
+          $notesFile = "docs/RELEASE-NOTES-$tagVersion.md"
+          if (Test-Path -LiteralPath $notesFile) {
+            gh release create $tag $archive.FullName "dist/SHA256SUMS.txt" --title "Portable Brave Updater $tag" --notes-file $notesFile --verify-tag
+          } else {
+            gh release create $tag $archive.FullName "dist/SHA256SUMS.txt" --title "Portable Brave Updater $tag" --notes "Release $tag" --verify-tag
+          }
           if ($LASTEXITCODE -ne 0) { throw "Release-Erstellung fehlgeschlagen" }

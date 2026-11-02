@@ -43,6 +43,9 @@ Geplante Kernfunktionen:
 | `05-RELEASE-LIZENZ.md` | MIT, Marken, 7-Zip, Release-Checkliste |
 | `06-BEST-PRACTICES.md` | CLI-, Build-, Security- und Testing-Best-Practices |
 | `07-INSTALLATIONSPROTOKOLL.md` | Ist-Stand und exakte Befehle der Build-Umgebung |
+| `RELEASES.md` | Release-Index und Hinweis zu Milestones |
+| `RELEASE-NOTES-1.3.3.7.md` | Release Notes 1.3.3.7 |
+| `../CHANGELOG.md` | Release-Historie |
 | `adr/0001-csharp-behalten.md` | ADR: keine Neuimplementierung |
 | `adr/0002-zielsystem-net48.md` | ADR: .NET Framework 4.8 statt 4.0/4.7 |
 | `adr/0003-cli-konventionen.md` | ADR: Long-Options und Semantik |

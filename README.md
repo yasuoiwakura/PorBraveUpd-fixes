@@ -8,3 +8,7 @@ The name Brave™ as well as related names, marks, emblems and images are regist
 For unpacking the downloaded Brave offline installer i use 7zr.exe
 
 - 7zr.exe - https://www.7-zip.org/ (Public Domain)
+
+## Releases
+
+See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASES.md](docs/RELEASES.md).
