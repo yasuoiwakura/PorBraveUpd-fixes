@@ -27,14 +27,14 @@ Der Fork ist technisch nicht leer. Er enthaelt den vollstaendigen Upstream-Stand
 Wichtige Code-Stellen:
 
 - `Program.cs:15`: `Main()` ohne Kommandozeilenargumente.
-- `Form1.cs:33`: Konstruktor fuehrt Netzwerkaufrufe und UI-Setup aus.
-- `Form1.cs:328`: `DownloadFile` ist eng an WinForms und Fortschritts-Controls gekoppelt.
-- `Form1.cs:908`: Self-Update-Pruefung und UI.
-- `Form1.cs:1041`: Launcher-Update-Pruefung.
-- `Form1.cs:991`, `:1013`, `:1046`, `:1059`: URLs zeigen fest auf `UndertakerBen/PorBraveUpd`.
-- `Form1.cs:173`, `:191`: laufender Brave blockiert per MessageBox.
-- `Portable Brave Updater.csproj:11`: Ziel .NET Framework 4.7.
-- Launcher-CSProjects: Ziel .NET Framework 4.0.
+- `Form1.cs:36`: Konstruktor fuehrt Netzwerkaufrufe und UI-Setup aus.
+- `Form1.cs:331`: `DownloadFile` ist eng an WinForms und Fortschritts-Controls gekoppelt.
+- `Form1.cs:911`: Self-Update-Pruefung und UI.
+- `Form1.cs:1044`: Launcher-Update-Pruefung.
+- `Form1.cs:994`, `:1016`, `:1025`, `:1049`, `:1062`: URLs wurden am 2026-11-02 auf den Fork zentralisiert.
+- `Form1.cs:176`, `:194`: laufender Brave blockiert per MessageBox.
+- `Portable Brave Updater.csproj:11`: Ziel war .NET Framework 4.7; am 2026-11-02 auf 4.8 retargetet.
+- Launcher-CSProjects: Ziel war .NET Framework 4.0; am 2026-11-02 auf 4.8 retargetet.
 
 ## 3. Funktionstest des Upstream-Protokolls
 
@@ -119,7 +119,7 @@ Der bestehende README-Disclaimer sollte beibehalten werden.
 1. Launch-Parameter heisst `--launch-brave`.
 2. Update-Scope: `--update=existing` als Default, `--update=all` als Alternative. `--update all` wird als tolerante Schreibweise akzeptiert.
 3. Launch: Wenn nur eine Edition installiert ist, diese starten. Bevorzugt wird der vorhandene Launcher.
-4. Self-Update: im Prototyp deaktiviert, fuer ein Release auf Fork-URLs umgestellt.
+4. Self-Update: URLs auf den Fork umgestellt; Release-Assets stehen noch aus.
 
 ## 9. Referenzen
 

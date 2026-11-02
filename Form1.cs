@@ -14,6 +14,9 @@ namespace Brave_Updater
 {
     public partial class Form1 : Form
     {
+        private const string RepositoryUrl = "https://github.com/yasuoiwakura/PorBraveUpd-fixes";
+        private const string RawMasterUrl = "https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master";
+
         public static string[] ring = new string[8] { "Nightly", "Dev", "Beta", "Stable", "Nightly", "Dev", "Beta", "Stable" };
         public static string[] arappid = new string[8] { "C6CB981E-DB30-4876-8639-109F8933582C", "CB2150F2-595F-4633-891A-E39720CE0531", "103BD053-949B-43A8-9120-2E424887DE11", "AFE6A462-C574-4B8A-AF43-4CC60DF4563B", "C6CB981E-DB30-4876-8639-109F8933582C", "CB2150F2-595F-4633-891A-E39720CE0531", "103BD053-949B-43A8-9120-2E424887DE11", "AFE6A462-C574-4B8A-AF43-4CC60DF4563B" };
         public static string[] arapVersion = new string[8] { "x86-ni", "x86-dev", "x86-be", "x86-rel", "x64-ni", "x64-dev", "x64-be", "x64-rel" };
@@ -988,11 +991,11 @@ namespace Brave_Updater
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             try
             {
-                var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorBraveUpd/raw/master/Version.txt");
+                var request = (WebRequest)HttpWebRequest.Create(RawMasterUrl + "/Version.txt");
                 var response = request.GetResponse();
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    var version = reader.ReadToEnd();
+                    var version = reader.ReadToEnd().Trim();
                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Brave Updater.exe");
                     versionLabel.Text = testm.FileVersion + "  >>> "+ version;
                     if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
@@ -1010,16 +1013,16 @@ namespace Brave_Updater
             void UpdateButton_Click(object sender, EventArgs e)
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                var request2 = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorBraveUpd/raw/master/Version.txt");
+                var request2 = (WebRequest)HttpWebRequest.Create(RawMasterUrl + "/Version.txt");
                 var response2 = request2.GetResponse();
                 using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
                 {
-                    var version = reader.ReadToEnd();
+                    var version = reader.ReadToEnd().Trim();
                     reader.Close();
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     using (WebClient myWebClient2 = new WebClient())
                     {
-                        myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorBraveUpd/releases/download/v{version}/Portable.Brave.Updater.v{version}.7z", @"Portable.Brave.Updater.v" + version + ".7z");
+                        myWebClient2.DownloadFile($"{RepositoryUrl}/releases/download/v{version}/Portable.Brave.Updater.v{version}.7z", @"Portable.Brave.Updater.v" + version + ".7z");
                     }
                     File.AppendAllText(@"Update.cmd", "@echo off" + "\n" +
                         "timeout /t 1 /nobreak" + "\n" +
@@ -1043,11 +1046,11 @@ namespace Brave_Updater
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             try
             {
-                var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorBraveUpd/raw/master/Launcher/Version.txt");
+                var request = (WebRequest)HttpWebRequest.Create(RawMasterUrl + "/Launcher/Version.txt");
                 var response = request.GetResponse();
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    var version = reader.ReadToEnd();
+                    var version = reader.ReadToEnd().Trim();
                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\Brave Launcher.exe");
                     if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
                     {
@@ -1056,7 +1059,7 @@ namespace Brave_Updater
                         {
                             using (WebClient myWebClient2 = new WebClient())
                             {
-                                myWebClient2.DownloadFile("https://github.com/UndertakerBen/PorBraveUpd/raw/master/Launcher/Launcher.7z", @"Launcher.7z");
+                                myWebClient2.DownloadFile(RawMasterUrl + "/Launcher/Launcher.7z", @"Launcher.7z");
                             }
                             string arguments = " x " + @"Launcher.7z" + " -o" + @"Bin\\Launcher" + " -y";
                             Process process = new Process();

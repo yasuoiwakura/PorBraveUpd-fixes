@@ -65,7 +65,7 @@ Fuer dieses Projekt wird ein **handgeschriebener Parser** empfohlen:
 
 ## 5. Sicherheit
 
-- Self-Update standardmaessig aus.
+- Self-Update bewusst steuern; aktuell auf den Fork umgestellt, Release-Assets und Hashpruefung stehen noch aus.
 - Wenn Self-Update aktiv: HTTPS, SHA256, optional Signatur.
 - Brave-Installer optional per Authenticode pruefen.
 - Keine Ausfuehrung bei Hash-Mismatch.

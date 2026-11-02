@@ -15,7 +15,7 @@ Geplante Kernfunktionen:
 - `--launch-brave`: nach dem Update die passende Brave-Edition starten.
 - `--quit-after`: Updater nach Abschluss beenden.
 - `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave`.
-- Self-Update fuer den Prototyp deaktiviert; fuer ein Release auf Fork-URLs umgestellt.
+- Self-Update auf Fork-URLs umgestellt; Release-Assets stehen noch aus.
 
 ## Entscheidungen
 
@@ -27,7 +27,7 @@ Geplante Kernfunktionen:
 | CLI-Stil | GNU/POSIX-Long-Options mit `--`, keine `/`-Switches |
 | Update-Scope | `--update=existing` (Default), `--update=all` |
 | Launch | `--launch-brave`; bevorzugt vorhandener Launcher |
-| Self-Update | Prototyp deaktiviert, Release auf Fork-URLs |
+| Self-Update | auf Fork-URLs umgestellt, Release-Assets offen |
 | Build | Visual Studio 2022 Build Tools + MSBuild |
 | Dokumentation | Spec-Driven Development: Analyse, Build, CLI-Spec, Architektur, Testplan, Release/Lizenz, ADRs |
 
@@ -52,6 +52,8 @@ Geplante Kernfunktionen:
 - Analyse: erledigt
 - Dokumentation: erledigt
 - Build-Umgebung: eingerichtet (2026-11-02)
-- Retargeting auf .NET Framework 4.8: offen
-- Implementierung: nicht begonnen
-- Baseline-Build und Smoke-Test: offen
+- Retargeting auf .NET Framework 4.8: erledigt (2026-11-02)
+- GitHub-URLs auf Fork umgestellt: erledigt (2026-11-02)
+- Build: erfolgreich (2026-11-02)
+- Implementierung CLI: nicht begonnen
+- Baseline-Smoke-Test mit einer Edition: offen

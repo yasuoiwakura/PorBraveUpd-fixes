@@ -8,12 +8,12 @@ Der Updater ist eine WinForms-Anwendung mit stark vermischter UI- und Fachlogik.
 
 Probleme:
 
-- `Form1`-Konstruktor fuehrt Netzwerkaufrufe aus (`Form1.cs:33`).
-- Update-Logik, Download, Entpacken und UI-Fortschritt sind in `DownloadFile` gekoppelt (`Form1.cs:328`).
-- Fehler und Hinweise laufen ueber `MessageBox` (`Form1.cs:191`, `:661`).
-- Self-Update und Launcher-Update laufen ungefragt beim Start (`Form1.cs:908`, `:1041`).
-- Daten liegen in parallelen Arrays und werden ueber Indizes verdrahtet (`Form1.cs:17`-`:27`).
-- URLs sind hart auf `UndertakerBen/PorBraveUpd` verdrahtet.
+- `Form1`-Konstruktor fuehrt Netzwerkaufrufe aus (`Form1.cs:36`).
+- Update-Logik, Download, Entpacken und UI-Fortschritt sind in `DownloadFile` gekoppelt (`Form1.cs:331`).
+- Fehler und Hinweise laufen ueber `MessageBox` (`Form1.cs:194`, `:664`).
+- Self-Update und Launcher-Update laufen ungefragt beim Start (`Form1.cs:911`, `:1044`).
+- Daten liegen in parallelen Arrays und werden ueber Indizes verdrahtet (`Form1.cs:20`-`:30`).
+- URLs waren hart auf `UndertakerBen/PorBraveUpd` verdrahtet; seit 2026-11-02 zentral als `RepositoryUrl`/`RawMasterUrl` auf den Fork umgestellt.
 - Keine Tests.
 - `Thread.Sleep` und synchrone Netzwerkaufrufe blockieren die UI.
 
@@ -137,18 +137,19 @@ Nach jedem Schritt bauen und einen Update-Test durchfuehren.
 
 ## 8. Self-Update
 
-Im MVP:
+Aktueller Stand:
 
-- Self-Update standardmaessig deaktiviert.
-- Keine automatische Pruefung gegen Upstream.
-- Keine automatische Ersetzung der eigenen EXE.
+- Self-Update ist aktiv, aber auf den Fork umgestellt.
+- Keine Pruefung gegen Upstream.
+- Solange `Version.txt` und EXE-Version identisch sind (1.3.0.0), wird kein Self-Update angeboten.
+- Der Fork hat noch keine Release-Assets; ein Versionsbump wuerde den Download brechen.
 
 Fuer ein Release:
 
-- URLs auf den eigenen Fork umstellen.
+- Release-Asset `Portable.Brave.Updater.v<Version>.7z` bereitstellen.
 - `Version.txt` und Release-Asset-Namen konsistent halten.
 - Optional Hashpruefung ergaenzen.
-- Optional `--self-update` als Opt-in.
+- Optional Self-Update deaktivieren oder `--self-update` als Opt-in anbieten.
 
 ## 9. Sicherheit
 

@@ -253,7 +253,7 @@ Test-Path "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETF
 Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs\Windows" -Recurse -Filter TlbImp.exe
 ```
 
-Nach dem Build:
+Nach der CLI-Implementierung:
 
 ```powershell
 .\bin\Release\Portable Brave Updater.exe --help
@@ -267,7 +267,29 @@ Fuer den Baseline-Test zunaechst ohne CLI:
 4. `Brave <Edition>\updates\Version.log` pruefen.
 5. Sicherstellen, dass die Launcher-EXE kopiert wurde.
 
-## 10. Referenzen
+## 10. Build-Ergebnis 2026-11-02
+
+Hauptprojekt:
+
+```text
+bin\Release\Portable Brave Updater.exe
+FileVersion: 1.3.0.0
+Groesse: 103424 Bytes
+```
+
+Launcher: alle neun Projekte erfolgreich gebaut.
+
+Fork-URLs:
+
+```text
+https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Version.txt          -> HTTP 200
+https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher/Version.txt -> HTTP 200
+https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher/Launcher.7z -> HTTP 200
+```
+
+Build-Artefakte werden ueber `.gitignore` von `bin/`/`obj/` ferngehalten.
+
+## 11. Referenzen
 
 - .NET Framework Support Policy: https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-framework
 - .NET Framework Developer Pack: https://learn.microsoft.com/en-us/dotnet/framework/install/guide-for-developers

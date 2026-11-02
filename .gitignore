@@ -1,0 +1,12 @@
+# Build outputs
+/bin/Debug/
+/bin/Release/
+/obj/
+/Launcher/*/bin/Debug/
+/Launcher/*/bin/Release/
+/Launcher/*/obj/
+
+# Visual Studio user files
+*.user
+*.suo
+.vs/

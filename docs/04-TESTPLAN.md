@@ -82,7 +82,7 @@ Stand: 2026-11-02
 | I10 | Fehlendes `Bin/7zr.exe` | `Bin/7zr.exe` umbenennen | klarer Fehler, Exit 1 |
 | I11 | Fehlender Launcher | Launcher-EXE entfernen | Fallback auf `Brave.exe` oder Exit 6 |
 | I12 | `Profile.txt` fehlt | `--launch-brave` | Fallback auf `Brave.exe --user-data-dir` |
-| I13 | Self-Update deaktiviert | Start | kein Upstream-Zugriff, keine Ersetzung |
+| I13 | Self-Update auf Fork | Start | kein Upstream-Zugriff; bei gleicher Version keine Ersetzung |
 | I14 | Netzwerkfehler beim Download | Netzwerk trennen | Exit 4, keine korrupte Installation |
 | I15 | Abbruch/Neustart | Update unterbrechen, erneut starten | kein kaputter Zustand, erneuter Lauf moeglich |
 
@@ -124,5 +124,5 @@ Stand: 2026-11-02
 
 - Launcher kann beim ersten Start einen Profil-Dialog zeigen, wenn `Profile.txt` fehlt. Deshalb der Fallback auf `Brave.exe`.
 - `--update=all` ist bandwidthintensiv und braucht Zeit.
-- Self-Update ist im MVP deaktiviert.
+- Self-Update ist aktiv, aber auf den Fork umgestellt; Release-Assets fehlen noch.
 - Ein echter 32-Bit-Windows-Test ist optional; Windows 11 ist x64-only.

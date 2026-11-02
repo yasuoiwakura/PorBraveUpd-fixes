@@ -152,18 +152,23 @@ C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\Tlb
 | Keine Neuinstallation | bestehende Build-Tools-Instanz modifiziert |
 | Kein Reboot | `--norestart` |
 
-## 7. Offene Punkte
+## 7. Stand nach Build
 
-1. Projektdateien auf .NET Framework 4.8 retargeten:
-   - Hauptprojekt
-   - neun Launcher-Projekte
-2. `app.config` auf 4.8 anpassen.
-3. `Bin/`-Assets bereitstellen:
+Erledigt am 2026-11-02:
+
+1. Hauptprojekt und neun Launcher-Projekte auf .NET Framework 4.8 retargetet.
+2. `app.config` auf 4.8 angepasst.
+3. GitHub-URLs zentralisiert und auf den Fork umgestellt.
+4. Hauptprojekt erfolgreich gebaut.
+5. Alle neun Launcher erfolgreich gebaut.
+
+Offen:
+
+1. `Bin/`-Assets bereitstellen:
    - `7zr.exe`
    - Launcher-EXEs
-4. Erster Build.
-5. Baseline-Smoke-Test mit einer Edition.
-6. Danach CLI-Implementierung gemaess `02-CLI-SPEC.md`.
+2. Baseline-Smoke-Test mit einer Edition.
+3. CLI-Implementierung gemaess `02-CLI-SPEC.md`.
 
 ## 8. Reproduktion
 
@@ -198,3 +203,30 @@ Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs\Windows" -Recurse -Filter T
 ```
 
 Hinweis: Wenn `winget` im `PATH` fehlt, den vollstaendigen Pfad verwenden oder den Visual Studio Installer grafisch oeffnen.
+
+## 9. Build-Ergebnis 2026-11-02
+
+Hauptprojekt:
+
+```text
+bin\Release\Portable Brave Updater.exe
+FileVersion: 1.3.0.0
+Groesse: 103424 Bytes
+```
+
+Launcher:
+
+```text
+Alle neun Launcher-Projekte erfolgreich gebaut.
+Ausgaben unter Launcher\<Name>\bin\Release\.
+```
+
+Fork-URLs:
+
+```text
+Version.txt          -> HTTP 200
+Launcher/Version.txt -> HTTP 200
+Launcher/Launcher.7z -> HTTP 200
+```
+
+Hinweis: `Bin/` ist noch nicht zusammengestellt. Fuer einen Laufzeit-Smoke-Test muessen `Bin/7zr.exe` und `Bin/Launcher/*.exe` bereitgestellt werden.

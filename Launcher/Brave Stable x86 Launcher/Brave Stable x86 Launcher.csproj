@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Brave_Stable_x86_Launcher</RootNamespace>
     <AssemblyName>Brave Stable x86 Launcher</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <PublishUrl>publish\</PublishUrl>

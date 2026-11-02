@@ -51,24 +51,29 @@ Fuer eine oeffentliche Verbreitung:
 
 Dies ist keine Rechtsberatung.
 
-## 5. Self-Update-URLs
+## 5. Self-Update- und Update-URLs
 
-Im Code zeigen folgende Stellen fest auf den Upstream:
+Die GitHub-URLs sind seit 2026-11-02 im Code zentralisiert und zeigen auf den Fork:
 
-- `Form1.cs:991`: `Version.txt` fuer Updater-Self-Update
-- `Form1.cs:1013`: `Version.txt` fuer Update-Button
-- `Form1.cs:1022`: Release-Asset-Download
-- `Form1.cs:1046`: `Launcher/Version.txt`
-- `Form1.cs:1059`: `Launcher/Launcher.7z`
+- `Form1.cs`: `RepositoryUrl` = `https://github.com/yasuoiwakura/PorBraveUpd-fixes`
+- `Form1.cs`: `RawMasterUrl` = `https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master`
 
-Fuer den Prototyp:
+Verwendet fuer:
 
-- Self-Update deaktivieren.
-- Keine automatische Pruefung gegen Upstream.
+- `Version.txt` (Self-Update und Update-Button)
+- `Launcher/Version.txt`
+- `Launcher/Launcher.7z`
+- Release-Asset-Download
+
+Wichtig:
+
+- Self-Update ist funktional noch aktiv, aber auf den Fork umgestellt.
+- Der Fork hat aktuell keine Releases. Solange `Version.txt` 1.3.0.0 und die EXE 1.3.0.0 sind, wird kein Self-Update angeboten.
+- Vor dem ersten Versionsbump muss ein Release-Asset `Portable.Brave.Updater.v<Version>.7z` unter dem Fork existieren, sonst schlaegt der Self-Update-Download fehl.
+- Fuer den Prototyp kann Self-Update spaeter deaktiviert werden.
 
 Fuer ein Release:
 
-- Alle URLs auf den eigenen Fork umstellen.
 - Release-Asset-Namen konsistent halten: `Portable.Brave.Updater.v<Version>.7z`.
 - `Version.txt` im Repo-Root aktualisieren.
 - `Launcher/Version.txt` aktualisieren, falls Launcher neu gebaut werden.
