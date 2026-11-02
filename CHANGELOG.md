@@ -23,6 +23,8 @@ PortableApps integration and runtime-dependency release.
 - Menu icons follow the selected entries: `appicon` for the main entry and `appicon1..N` for `Start1..N`.
 - Menu descriptions clarify the Brave entries: `stable, x64` for `Brave` and `Update Brave, then start Brave` for `Brave (newest stable)`.
 - `DisplayVersion` is omitted from the generated appinfo so the Platform does not show the updater version beside the Brave entries; `PackageVersion` remains.
+- CI now runs for pull requests and manual dispatch; `dev`/`master` pushes no longer start an automatic build.
+- New nightly workflow builds `dev` only when changes exist since the last successful nightly; manual dispatch can force a build.
 - Shortened the PortableApps dialog text and moved the experimental/tracking note into a compact warning.
 
 ### Validation

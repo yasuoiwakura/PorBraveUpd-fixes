@@ -1,0 +1,68 @@
+name: nightly
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Build even if dev has no changes since the last nightly
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: nightly
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: windows-latest
+    outputs:
+      should_build: ${{ steps.check.outputs.should_build }}
+      sha: ${{ steps.check.outputs.sha }}
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Check for changes
+        id: check
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $sha = (git rev-parse HEAD).Trim()
+          $force = "${{ inputs.force }}" -eq "true"
+          $shouldBuild = "true"
+
+          if (-not $force) {
+            $tags = @(git tag --points-at $sha)
+            if ($tags -match '^v') {
+              Write-Host "Release tag already points at $sha; skipping nightly build."
+              $shouldBuild = "false"
+            } else {
+              $lastRun = gh run list --workflow nightly.yml --status success --limit 1 --json headSha | ConvertFrom-Json
+              if ($lastRun -and $lastRun[0].headSha -eq $sha) {
+                Write-Host "No changes since last successful nightly ($sha); skipping."
+                $shouldBuild = "false"
+              }
+            }
+          }
+
+          "sha=$sha" >> $env:GITHUB_OUTPUT
+          "should_build=$shouldBuild" >> $env:GITHUB_OUTPUT
+
+  build:
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    uses: ./.github/workflows/build.yml
+    with:
+      ref: dev
+      channel: dev
