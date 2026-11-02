@@ -321,6 +321,7 @@ Rejected for now because:
 2. Should the optional `.pap.ini` be included by default in the package or only documented?
 3. Should duplicate Platform entries be hidden manually, or should the launcher file be moved later with updater changes?
 4. Should the deployment helper be implemented now or only documented?
+5. Should a full PAF build and multi-launcher adapters be pursued later? See `09-PAF-FUTURE.md`.
 
 ## 10. References
 

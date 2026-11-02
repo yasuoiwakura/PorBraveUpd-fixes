@@ -44,6 +44,7 @@ Planned core features:
 | `06-BEST-PRACTICES.md` | CLI, build, security and testing best practices |
 | `07-INSTALLATION-LOG.md` | Build environment state and exact commands |
 | `08-PORTABLEAPPS-INTEGRATION.md` | Planned PortableApps.com integration, options and findings |
+| `09-PAF-FUTURE.md` | Future full PAF build, naming, self-update policy and launcher adapters |
 | `RELEASES.md` | Release index and note on milestones |
 | `RELEASE-NOTES-1.3.3.337.md` | Release notes for 1.3.3.337 |
 | `RELEASE-NOTES-1.3.3.37.md` | Release notes for 1.3.3.37 |
@@ -69,4 +70,5 @@ Planned core features:
 - CLI smoke tests: `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave` (2026-11-02)
 - Batch test scripts included in the package: `update_and_close.bat`, `update_and_run_brave.bat`
 - PortableApps.com integration: Phase 1 implemented in the updater GUI; Platform launch test pending; see `docs/08-PORTABLEAPPS-INTEGRATION.md`
+- Future full PAF build: documented, not implemented; see `docs/09-PAF-FUTURE.md`
 - Baseline smoke test with a real update: open
