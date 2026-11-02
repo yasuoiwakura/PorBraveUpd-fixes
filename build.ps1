@@ -103,7 +103,7 @@ foreach ($projectDir in (Get-ChildItem -LiteralPath "Launcher" -Directory)) {
     Copy-Item -LiteralPath $exe -Destination (Join-Path $launcherDir ($projectDir.Name + ".exe"))
 }
 
-foreach ($file in @("README.md", "LICENSE", "THIRD-PARTY-NOTICES.txt")) {
+foreach ($file in @("README.md", "LICENSE", "THIRD-PARTY-NOTICES.txt", "update_and_close.bat", "update_and_run_brave.bat")) {
     if (Test-Path -LiteralPath $file) {
         Copy-Item -LiteralPath $file -Destination (Join-Path $stage $file)
     }

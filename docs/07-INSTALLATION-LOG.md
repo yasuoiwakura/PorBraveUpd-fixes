@@ -164,17 +164,20 @@ Done on 2026-11-02:
 
 Open:
 
-1. Live installation not replaced yet; test copy and baseline smoke test first.
-2. CLI implementation according to `02-CLI-SPEC.md`.
-3. Verify GitHub Actions workflows after pushing to GitHub.
+1. Live installation not replaced yet; test copy and baseline update test first.
+2. Baseline update smoke test with a real Brave edition.
+3. Verify the release workflow after pushing the `v1.3.3.37` tag.
+
+CLI MVP implemented and locally verified with `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log` and `--wait-for-brave`.
 
 Already produced:
 
-- `dist/Portable.Brave.Updater.v1.3.3.7.7z`
-  - `Portable Brave Updater.exe` (1.3.3.7)
+- `dist/Portable.Brave.Updater.v1.3.3.37.7z`
+  - `Portable Brave Updater.exe` (1.3.3.37)
   - `Bin/7zr.exe` (19.00)
   - `Bin/Launcher/*.exe` (1.3.3.7)
   - `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.txt`
+  - `update_and_close.bat`, `update_and_run_brave.bat`
 - `dist/SHA256SUMS.txt`
 - `Launcher/Launcher.7z` (9 launchers, 1.3.3.7)
 
@@ -218,8 +221,8 @@ Main project:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.3.7
-Size: 103424 bytes
+FileVersion: 1.3.3.37
+Size: 124416 bytes
 ```
 
 Launchers:
@@ -228,7 +231,7 @@ Launchers:
 All nine launcher projects built successfully.
 Output under Launcher\<Name>\bin\Release\.
 Launcher version: 1.3.3.7
-Launcher/Launcher.7z rebuilt: 9 EXEs, 314639 bytes.
+Launcher/Launcher.7z: 9 EXEs, 314639 bytes.
 ```
 
 Fork URLs:

@@ -33,9 +33,53 @@ namespace Brave_Updater
         readonly string applicationPath = Application.StartupPath;
         readonly CultureInfo culture1 = CultureInfo.CurrentUICulture;
         readonly ToolTip toolTip = new ToolTip();
-        public Form1()
+        private readonly CommandLineOptions cliOptions;
+        private Exception initializationException;
+        private bool cliPerVersionFolders;
+        private bool cliForce;
+        private bool cliCreateShortcut;
+        private Exception cliUpdateError;
+
+        private bool Headless
         {
+            get { return cliOptions != null; }
+        }
+
+        private bool UsePerVersionFolders
+        {
+            get { return Headless ? cliPerVersionFolders : checkBox3.Checked; }
+        }
+
+        private bool IgnoreVersionCheck
+        {
+            get { return Headless ? cliForce : checkBox4.Checked; }
+        }
+
+        private bool CreateShortcut
+        {
+            get { return Headless ? cliCreateShortcut : checkBox5.Checked; }
+        }
+
+        public Form1() : this(null)
+        {
+        }
+
+        internal Form1(CommandLineOptions options)
+        {
+            cliOptions = options;
             InitializeComponent();
+
+            if (Headless)
+            {
+                ShowInTaskbar = false;
+                FormBorderStyle = FormBorderStyle.None;
+                StartPosition = FormStartPosition.Manual;
+                Location = new Point(-32000, -32000);
+                Size = new Size(1, 1);
+                Opacity = 0;
+                WindowState = FormWindowState.Minimized;
+                Shown += async (sender, args) => await RunCliAsync();
+            }
             try
             {
                 for (int i = 0; i <= 7; i++)
@@ -118,7 +162,14 @@ namespace Brave_Updater
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                if (Headless)
+                {
+                    initializationException = ex;
+                }
+                else
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             if (IntPtr.Size == 8)
             {
@@ -172,6 +223,10 @@ namespace Brave_Updater
                         CheckButton2();
                     }
                 }
+            }
+            if (Headless)
+            {
+                return;
             }
             foreach (Process proc in Process.GetProcesses())
             {
@@ -330,6 +385,7 @@ namespace Brave_Updater
         }
         public async Task DownloadFile(int a, int b, int c, int d)
         {
+            cliUpdateError = null;
             GroupBox progressBox = new GroupBox
             {
                 Location = new Point(10, button10.Location.Y + button10.Height + 5),
@@ -408,9 +464,18 @@ namespace Brave_Updater
                         };
                         webClient.DownloadFileCompleted += (o, args) =>
                         {
+                            try
+                            {
                             if (args.Cancelled == true)
                             {
-                                MessageBox.Show("Download has been canceled.");
+                                if (Headless)
+                                {
+                                    LogError("Download has been canceled.");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Download has been canceled.");
+                                }
                             }
                             else
                             {
@@ -440,7 +505,7 @@ namespace Brave_Updater
                                 {
                                     string[] instVersion = File.ReadAllText(instDir[b] + "\\updates\\Version.log").Split(new char[] { '|' });
                                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\Brave.exe");
-                                    if (checkBox3.Checked)
+                                    if (UsePerVersionFolders)
                                     {
                                         if (testm.FileVersion != instVersion[0])
                                         {
@@ -451,7 +516,7 @@ namespace Brave_Updater
                                             Thread.Sleep(2000);
                                             NewMethod4(a, b, c, testm);
                                         }
-                                        else if ((testm.FileVersion == instVersion[0]) && (checkBox4.Checked))
+                                        else if ((testm.FileVersion == instVersion[0]) && (IgnoreVersionCheck))
                                         {
                                             if (Directory.Exists(instDir[b] + "\\" + instVersion[0]))
                                             {
@@ -461,7 +526,7 @@ namespace Brave_Updater
                                             NewMethod4(a, b, c, testm);
                                         }
                                     }
-                                    else if (!checkBox3.Checked)
+                                    else
                                     {
                                         if (Directory.Exists(instDir[b] + "\\" + instVersion[0]))
                                         {
@@ -480,14 +545,14 @@ namespace Brave_Updater
                                     NewMethod4(a, b, c, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\Brave.exe"));
                                 }
                             }
-                            if (checkBox5.Checked)
+                            if (CreateShortcut)
                             {
                                 if (!File.Exists(deskDir + "\\" + instDir[b] + ".lnk"))
                                 {
                                     NewMethod5(a, b);
                                 }
                             }
-                            else if (File.Exists(deskDir + "\\" + instDir[b] + ".lnk") && (instDir[b] == "Brave"))
+                            else if (!Headless && File.Exists(deskDir + "\\" + instDir[b] + ".lnk") && (instDir[b] == "Brave"))
                             {
                                 NewMethod5(a, b);
                             }
@@ -508,6 +573,18 @@ namespace Brave_Updater
                                     downloadLabel.Text = "Unpacked";
                                     break;
                             }
+                            }
+                            catch (Exception ex)
+                            {
+                                if (Headless)
+                                {
+                                    cliUpdateError = ex;
+                                }
+                                else
+                                {
+                                    MessageBox.Show(ex.Message);
+                                }
+                            }
                         };
                         try
                         {
@@ -516,6 +593,10 @@ namespace Brave_Updater
                         }
                         catch (Exception ex)
                         {
+                            if (Headless)
+                            {
+                                throw;
+                            }
                             MessageBox.Show(ex.Message);
                         }
                     }
@@ -523,11 +604,21 @@ namespace Brave_Updater
             }
             catch(Exception ex)
             {
+                if (Headless)
+                {
+                    throw;
+                }
                 MessageBox.Show(ex.Message);
             }
             await Task.WhenAll(list);
             await Task.Delay(2000);
             Controls.Remove(progressBox);
+            if (cliUpdateError != null)
+            {
+                Exception error = cliUpdateError;
+                cliUpdateError = null;
+                throw error;
+            }
         }
         public void CheckButton()
         {
@@ -663,6 +754,11 @@ namespace Brave_Updater
         }
         public void Message1()
         {
+            if (Headless)
+            {
+                LogWarn("The same version is already installed.");
+                return;
+            }
             switch (culture1.TwoLetterISOLanguageName)
             {
                 case "ru":
@@ -726,7 +822,7 @@ namespace Brave_Updater
             {
                 if (File.ReadAllText(instDir[b] + "\\updates\\Version.log").Split(new char[] { '|' })[0] == buildversion[a])
                 {
-                    if (checkBox4.Checked)
+                    if (IgnoreVersionCheck)
                     {
                         await DownloadFile(a, b, c, d);
                     }
@@ -752,7 +848,7 @@ namespace Brave_Updater
                 string[] instVersion = File.ReadAllText(@"Brave\updates\Version.log").Split(new char[] { '|' });
                 if ((instVersion[0] == buildversion[a]) && (instVersion[1] == ring2[a]) && (instVersion[2] == architektur2[b]))
                 {
-                    if (checkBox4.Checked)
+                    if (IgnoreVersionCheck)
                     {
                         await DownloadFile(a, 8, b, c);
                     }

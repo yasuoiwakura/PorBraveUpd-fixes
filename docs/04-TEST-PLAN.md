@@ -111,13 +111,15 @@ Last updated: 2026-11-02
 | R07 | Self-update URLs | point to fork or are disabled |
 | R08 | Signature | optional: EXE signed, SmartScreen OK |
 | R09 | Dev artifact | name contains timestamp and SHA; `BUILD-INFO.txt` present; no release/tag |
+| R10 | `update_and_close.bat` | Runs `--update=existing --quit-after`; updater exits; exit code is returned |
+| R11 | `update_and_run_brave.bat` | Runs with auto/explicit edition; `--launch-brave` starts Brave or returns exit 6 |
 
 ## 9. Acceptance criteria
 
 - T01-T08 and C01-C18 pass.
 - At least I01, I02, I05, I06, I07, I08, I10, I13 pass.
 - G01-G07 pass.
-- R01-R09 pass.
+- R01-R11 pass.
 - No open message boxes in `--quiet` mode.
 - No upstream URLs in the release build, except where intentionally documented.
 

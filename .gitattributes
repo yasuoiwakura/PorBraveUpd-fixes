@@ -5,3 +5,6 @@
 *.exe binary
 *.7z binary
 *.ico binary
+
+# Batch files use Windows line endings
+*.bat text eol=crlf

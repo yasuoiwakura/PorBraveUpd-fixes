@@ -296,10 +296,12 @@ Test-Path "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETF
 Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs\Windows" -Recurse -Filter TlbImp.exe
 ```
 
-After the CLI implementation:
+CLI verification:
 
 ```powershell
 .\bin\Release\Portable Brave Updater.exe --help
+.\bin\Release\Portable Brave Updater.exe --version
+.\bin\Release\Portable Brave Updater.exe --check
 ```
 
 For the baseline test without the CLI:
@@ -316,8 +318,8 @@ Main project:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.3.7
-Size: 103424 bytes
+FileVersion: 1.3.3.37
+Size: 124416 bytes
 ```
 
 Launchers: all nine projects built successfully.
@@ -333,7 +335,7 @@ https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher
 Local release package:
 
 ```text
-dist/Portable.Brave.Updater.v1.3.3.7.7z
+dist/Portable.Brave.Updater.v1.3.3.37.7z
 Checksum: see dist/SHA256SUMS.txt
 ```
 

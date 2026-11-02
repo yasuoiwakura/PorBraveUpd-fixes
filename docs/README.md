@@ -44,6 +44,7 @@ Planned core features:
 | `06-BEST-PRACTICES.md` | CLI, build, security and testing best practices |
 | `07-INSTALLATION-LOG.md` | Build environment state and exact commands |
 | `RELEASES.md` | Release index and note on milestones |
+| `RELEASE-NOTES-1.3.3.37.md` | Release notes for 1.3.3.37 |
 | `RELEASE-NOTES-1.3.3.7.md` | Release notes for 1.3.3.7 |
 | `../CHANGELOG.md` | Release history |
 | `adr/0001-keep-csharp.md` | ADR: no rewrite |
@@ -58,8 +59,11 @@ Planned core features:
 - Retargeting to .NET Framework 4.8: done (2026-11-02)
 - GitHub URLs switched to fork: done (2026-11-02)
 - Launchers at 1.3.3.7 and `Launcher.7z` rebuilt: done (2026-11-02)
+- Updater version: 1.3.3.37
 - Build: successful (2026-11-02)
-- Local release package: `dist/Portable.Brave.Updater.v1.3.3.7.7z`
+- Local release package: `dist/Portable.Brave.Updater.v1.3.3.37.7z`
 - GitHub Actions: `build`, `ci`, `release`; dev builds are artifacts
-- CLI implementation: not started
-- Baseline smoke test with one edition: open
+- CLI implementation: done (MVP)
+- CLI smoke tests: `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave` (2026-11-02)
+- Batch test scripts included in the package: `update_and_close.bat`, `update_and_run_brave.bat`
+- Baseline smoke test with a real update: open
