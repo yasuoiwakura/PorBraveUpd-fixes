@@ -70,6 +70,28 @@ namespace Brave_Updater
                     return;
                 }
 
+                var launcherNames = new List<string>();
+                foreach (CliEdition edition in targets)
+                {
+                    if (NeedsAction(edition))
+                    {
+                        launcherNames.Add(edition.SingleFolder
+                            ? "Brave Launcher.exe"
+                            : instDir[edition.Index] + " Launcher.exe");
+                    }
+                }
+
+                if (launcherNames.Count > 0)
+                {
+                    List<string> missing = GetMissingRuntimeFiles(launcherNames);
+                    if (missing.Count > 0)
+                    {
+                        LogError(FormatMissingRuntimeFiles(missing));
+                        CliExitCode = 7;
+                        return;
+                    }
+                }
+
                 if (!await EnsureBraveNotRunningAsync())
                 {
                     CliExitCode = 3;
@@ -142,14 +164,17 @@ namespace Brave_Updater
             return Task.FromResult(action ? 5 : 0);
         }
 
-        private async Task<bool> UpdateEditionAsync(CliEdition edition)
+        private bool NeedsAction(CliEdition edition)
         {
             string available = buildversion[edition.Index];
-            bool needsAction = edition.InstalledVersion == null
+            return edition.InstalledVersion == null
                 || !string.Equals(edition.InstalledVersion, available, StringComparison.OrdinalIgnoreCase)
                 || cliOptions.Force;
+        }
 
-            if (!needsAction)
+        private async Task<bool> UpdateEditionAsync(CliEdition edition)
+        {
+            if (!NeedsAction(edition))
             {
                 LogInfo(DisplayName(edition) + " is current (" + edition.InstalledVersion + ").");
                 return false;

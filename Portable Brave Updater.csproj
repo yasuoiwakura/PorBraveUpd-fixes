@@ -61,6 +61,8 @@
     </Compile>
     <Compile Include="CommandLineOptions.cs" />
     <Compile Include="ConsoleHelper.cs" />
+    <Compile Include="PortableAppsIntegration.cs" />
+    <Compile Include="PortableAppsSettingsForm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

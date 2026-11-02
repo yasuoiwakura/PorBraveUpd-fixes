@@ -68,7 +68,7 @@ Used for:
 Important:
 
 - Self-update is still active but points to the fork.
-- The fork's updater and `Version.txt` are at `1.3.3.37`; a 1.3.3.37 build therefore does not offer a self-update.
+- The fork's updater and `Version.txt` are at `1.3.37`; a 1.3.37 build therefore does not offer a self-update.
 - Older 1.3.0.0 builds can update only after the matching release asset exists.
 - Before bumping the version, publish `Portable.Brave.Updater.v<Version>.7z` under the fork; otherwise the self-update download fails.
 - Self-update can be disabled later if desired.
@@ -90,15 +90,15 @@ Keep these consistent:
 | `Version.txt` | Version read by self-update |
 | `Launcher/Version.txt` | Launcher update version, currently `1.3.3.7` |
 | `Launcher/Launcher.7z` | Launcher archive used by `CheckLauncher()` |
-| Release tag | e.g. `v1.3.3.37` |
-| Release asset | `Portable.Brave.Updater.v1.3.3.37.7z` |
+| Release tag | e.g. `v1.3.37` |
+| Release asset | `Portable.Brave.Updater.v1.3.37.7z` |
 | Dev artifact | Timestamped Actions artifact, not self-update capable |
 
 Recommendation: keep semantic versioning or the existing four-part .NET version.
 
 Important:
 
-- The updater is at `1.3.3.37`; the launchers remain at `1.3.3.7`.
+- The updater is at `1.3.37`; the launchers remain at `1.3.3.7`.
 - Before a stable release, set `Version.txt` and `AssemblyFileVersion` of the updater to the same new version.
 - Dev artifacts must never change `Version.txt`.
 
@@ -141,12 +141,70 @@ Important:
 
 - [ ] Generate SHA256 checksums.
 - [ ] Optional: sign the EXE with Authenticode.
-- [ ] Create GitHub release with tag and asset.
-- [ ] Tag points to `master`; `Version.txt` on `master` is current.
 - [ ] Create release notes under `docs/RELEASE-NOTES-<Version>.md`.
 - [ ] Update `Version.txt` only for stable releases.
 - [ ] Publish dev builds only as timestamped Actions artifacts; leave `Version.txt` unchanged.
+- [ ] Tag points to the `master` commit with matching `Version.txt` and `AssemblyFileVersion`.
+- [ ] Tag pushed explicitly.
+- [ ] Remote tag verified with `git ls-remote`.
+- [ ] `release` workflow completed successfully.
+- [ ] Release asset `Portable.Brave.Updater.v<Version>.7z` exists.
 - [ ] Test the self-update path if enabled.
+
+### Git tag and push
+
+Replace `<version>` with the release version, for example `1.3.37`.
+
+1. Check the tag target:
+
+   ```powershell
+   git show -s --format="%H %s" master
+   ```
+
+2. Create an annotated tag:
+
+   ```powershell
+   git tag -a v<version> -m "Portable Brave Updater v<version>"
+   ```
+
+3. Push only this tag to the `github` remote:
+
+   ```powershell
+   git push github v<version>
+   ```
+
+   Explicit alternative:
+
+   ```powershell
+   git push github refs/tags/v<version>
+   ```
+
+4. Verify the remote tag:
+
+   ```powershell
+   git ls-remote --tags github v<version>
+   ```
+
+5. Check GitHub Actions -> `release` and confirm the release asset:
+
+   ```text
+   Portable.Brave.Updater.v<version>.7z
+   ```
+
+Notes:
+
+- `git push` alone does **not** push tags.
+- `git push --tags` pushes **all** local tags; prefer the explicit tag push above.
+- The tag must point to the `master` commit that contains the matching `Version.txt` and `AssemblyFileVersion`.
+
+If the tag points to the wrong commit, delete and recreate it:
+
+```powershell
+git tag -d v<version>
+git push github :refs/tags/v<version>
+git tag -a v<version> -m "Portable Brave Updater v<version>" master
+git push github v<version>
+```
 
 ## 8. Security
 

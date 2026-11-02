@@ -188,6 +188,7 @@ Portable Brave Updater.exe --update=existing --launch-brave=stable:x64 -- --inco
 | 4 | Network, server or version-check error |
 | 5 | Update or installation available (`--check`/`--dry-run`) |
 | 6 | Launch failed or edition not unique |
+| 7 | Required runtime files are missing (`Bin\7zr.exe`, launcher) |
 
 ## 6. Output
 

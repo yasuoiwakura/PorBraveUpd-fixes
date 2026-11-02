@@ -113,13 +113,21 @@ Last updated: 2026-11-02
 | R09 | Dev artifact | name contains timestamp and SHA; `BUILD-INFO.txt` present; no release/tag |
 | R10 | `update_and_close.bat` | Runs `--update=existing --quit-after`; updater exits; exit code is returned |
 | R11 | `update_and_run_brave.bat` | Runs with auto/explicit edition; `--launch-brave` starts Brave or returns exit 6 |
+| R12 | Missing `Bin\7zr.exe` (GUI) | Immediate message naming `Bin\7zr.exe`; no download starts |
+| R13 | Missing `Bin\7zr.exe` (CLI) | Exit 7; log names `Bin\7zr.exe`; no download starts |
+| R14 | Missing launcher source | Message/log names `Bin\Launcher\<Edition> Launcher.exe` |
+| R15 | PortableApps icons | ICO has 16, 24, 32, 48, 64, 128, 256 px frames at 32-bit; PNGs are 32-bit |
+| R16 | Update entry icon | `Updater icon` and `Brave icon` produce the expected `appicon3` or updater-only icon; setting persists as `UpdateIcon` |
+| R17 | Three menu entries | All selected: `Icons=3`, `Start1=PortableAppsUpdater...`, `Start2=PortableAppsStart...`, `Start3=PortableAppsUpdate...`; `appicon1..3` match |
+| R18 | Menu descriptions | `Brave` shows `stable, x64`; `Brave (newest stable)` shows `Update Brave, then start Brave`; updater entry has no extra description |
+| R19 | Version display | `DisplayVersion` is omitted; `PackageVersion` remains in `[Version]` |
 
 ## 9. Acceptance criteria
 
 - T01-T08 and C01-C18 pass.
 - At least I01, I02, I05, I06, I07, I08, I10, I13 pass.
 - G01-G07 pass.
-- R01-R11 pass.
+- R01-R19 pass.
 - No open message boxes in `--quiet` mode.
 - No upstream URLs in the release build, except where intentionally documented.
 
