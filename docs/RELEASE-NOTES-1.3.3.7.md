@@ -12,7 +12,7 @@ Fork release with .NET 4.8 retargeting, fork URLs, a new build/release setup and
 
 ## Notes
 
-- CLI parameters are documented but not implemented yet.
+- This version is superseded by `1.3.3.37`.
 - Self-update points to the fork; the release asset is part of this version.
 - No code signing; self-update without hash verification.
 

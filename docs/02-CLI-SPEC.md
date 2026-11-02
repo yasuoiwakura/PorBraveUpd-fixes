@@ -1,7 +1,7 @@
 # 02 - CLI Specification
 
 Last updated: 2026-11-02  
-Status: authoritative for implementation
+Status: implemented for the MVP
 
 ## 1. Goal
 

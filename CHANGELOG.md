@@ -2,16 +2,45 @@
 
 All notable changes to this fork.
 
+## 1.3.3.37 - 2026-11-02
+
+CLI release for the fork.
+
+### Added
+
+- CLI parameters: `--update=existing|all`, `--launch-brave[=channel:arch]`, `--quit-after`, `--if-new`, `--force`, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave`, `--timeout`, `--help` and `--version`.
+- Headless execution with exit codes and no GUI dialogs.
+- Detection of both single-folder (`Brave`) and per-version (`Brave <Channel> <Arch>`) installations.
+- `--check` and `--dry-run` without downloads.
+- Optional log file and wait-for-Brave handling.
+- `--launch-brave` support for the existing launcher with fallback to `Brave.exe`.
+
+### Changed
+
+- `Program.Main` now parses arguments, attaches to the parent console and returns the CLI exit code.
+- `Form1` supports a hidden headless mode and routes update errors to the CLI.
+- Updater version is `1.3.3.37`.
+- Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
+
+### Validation
+
+- Local build and CLI smoke tests passed for `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave` and the no-installation cases.
+- A real update download and an actual Brave launch were not tested end-to-end because Brave was running during the local test.
+
+### Notes
+
+- No code signing; self-update without hash verification.
+- Release asset: `Portable.Brave.Updater.v1.3.3.37.7z`.
+
 ## 1.3.3.7 - 2026-11-02
 
-First fork release based on Portable Brave Updater 1.3.0.0.
+Build and retargeting preparation for the fork.
 
 ### Changed
 
 - Switched update and launcher URLs to `yasuoiwakura/PorBraveUpd-fixes`.
 - Retargeted the updater and all nine launchers to .NET Framework 4.8.
-- Bumped updater and launchers to version `1.3.3.7`.
-- Rebuilt `Launcher/Launcher.7z` with the new 1.3.3.7 launchers.
+- Set launcher version to `1.3.3.7` and rebuilt `Launcher/Launcher.7z`.
 - Self-update now checks and downloads from the fork.
 
 ### Build and release
@@ -28,6 +57,5 @@ First fork release based on Portable Brave Updater 1.3.0.0.
 
 ### Notes
 
-- CLI parameters are specified but not implemented yet.
-- Self-update assets are provided by this release.
+- This version is superseded by `1.3.3.37`.
 - No code signing; self-update without hash verification.
