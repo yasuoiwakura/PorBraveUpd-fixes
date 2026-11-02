@@ -54,6 +54,9 @@ Geplante Kernfunktionen:
 - Build-Umgebung: eingerichtet (2026-11-02)
 - Retargeting auf .NET Framework 4.8: erledigt (2026-11-02)
 - GitHub-URLs auf Fork umgestellt: erledigt (2026-11-02)
+- Launcher auf 1.3.3.7 und `Launcher.7z` neu erzeugt: erledigt (2026-11-02)
 - Build: erfolgreich (2026-11-02)
+- Release-Paket lokal erzeugt: `dist/Portable.Brave.Updater.v1.3.3.7.7z`
+- GitHub-Actions-Workflows: angelegt (`build`, `ci`, `dev-latest`, `release`)
 - Implementierung CLI: nicht begonnen
 - Baseline-Smoke-Test mit einer Edition: offen

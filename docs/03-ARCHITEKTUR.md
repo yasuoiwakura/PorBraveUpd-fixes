@@ -141,7 +141,7 @@ Aktueller Stand:
 
 - Self-Update ist aktiv, aber auf den Fork umgestellt.
 - Keine Pruefung gegen Upstream.
-- Solange `Version.txt` und EXE-Version identisch sind (1.3.0.0), wird kein Self-Update angeboten.
+- Solange `Version.txt` und EXE-Version identisch sind, wird kein Self-Update angeboten.
 - Der Fork hat noch keine Release-Assets; ein Versionsbump wuerde den Download brechen.
 
 Fuer ein Release:

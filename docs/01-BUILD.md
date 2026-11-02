@@ -206,23 +206,53 @@ Beispiel fuer einen Launcher:
 msbuild "Launcher\Brave Stable x64 Launcher\Brave Stable x64 Launcher.sln" /p:Configuration=Release
 ```
 
-Fuer alle Launcher kann spaeter ein `build.ps1` angelegt werden. Es empfiehlt sich, die Ausgaben automatisch nach `Bin/Launcher/` zu kopieren.
+`build.ps1` baut alle Launcher und stellt das Release-Paket zusammen.
 
 ## 7. GitHub Actions
 
-`windows-latest` enthaelt Visual Studio 2022 und .NET Framework 4.8. Nach dem Retargeting ist ein Build ohne lokale Installation moeglich.
+Workflows:
 
-Geplante Schritte:
+| Datei | Trigger | Zweck |
+|---|---|---|
+| `.github/workflows/build.yml` | `workflow_call` | Reusable Build, Paketierung, Artifact |
+| `.github/workflows/ci.yml` | Push auf `master`/`feat/**`, PR, manuell | CI-Build ohne Release |
+| `.github/workflows/dev-latest.yml` | Push auf `dev`, manuell | Dev-Build als Pre-Release `dev-latest` |
+| `.github/workflows/release.yml` | Tags `v*` | Stabiles GitHub Release |
 
-1. Repository auschecken.
-2. MSBuild bereitstellen (`microsoft/setup-msbuild`).
-3. NuGet-Restore.
-4. Hauptprojekt und Launcher bauen.
-5. `Bin/` zusammenstellen.
-6. Release-`.7z` erstellen.
-7. Artifact bzw. GitHub Release hochladen.
+Ablauf in `build.yml`:
 
-Hinweis: Wenn der Runner das .NET Framework 4.8 Targeting Pack nicht enthaelt, muss es ueber den VS-Installer oder das Developer Pack nachinstalliert werden. `windows-latest` bringt es in der Regel mit.
+1. Checkout
+2. MSBuild bereitstellen
+3. .NET Framework 4.8 Targeting Pack und `TlbImp.exe` pruefen
+4. NuGet-Restore
+5. `build.ps1 -Configuration Release` ausfuehren
+6. Artifact `portable-brave-updater` hochladen
+
+`build.ps1`:
+
+- baut Hauptprojekt und alle neun Launcher
+- stellt `dist/staging` zusammen
+- kopiert `tools/7zr/7zr.exe` nach `Bin/7zr.exe`
+- erzeugt `dist/Portable.Brave.Updater.v<Version>.7z`
+- erzeugt `dist/SHA256SUMS.txt`
+
+Dev-latest:
+
+- Tag: `dev-latest`
+- Asset: `Portable.Brave.Updater.dev-latest.7z`
+- Pre-Release
+- `Version.txt` wird **nicht** geaendert
+- Der Updater zieht `dev-latest` daher nicht automatisch
+
+Release:
+
+- Trigger nur Tag `v*`
+- prueft Tag, `Version.txt`, `AssemblyFileVersion` und Assetnamen
+- laedt `.7z` und `SHA256SUMS.txt` hoch
+- kein automatisches Commit von `Version.txt`
+- Der Tag muss auf `master` zeigen; der Updater liest `Version.txt` von `master`.
+
+Hinweis: `windows-latest` bringt VS 2022 und .NET Framework 4.8 in der Regel mit. Der Workflow prueft das explizit und bricht sonst mit einer klaren Meldung ab.
 
 ## 8. Typische Build-Fehler
 
@@ -273,7 +303,7 @@ Hauptprojekt:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.0.0
+FileVersion: 1.3.3.7
 Groesse: 103424 Bytes
 ```
 

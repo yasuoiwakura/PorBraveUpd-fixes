@@ -164,11 +164,19 @@ Erledigt am 2026-11-02:
 
 Offen:
 
-1. `Bin/`-Assets bereitstellen:
-   - `7zr.exe`
-   - Launcher-EXEs
-2. Baseline-Smoke-Test mit einer Edition.
-3. CLI-Implementierung gemaess `02-CLI-SPEC.md`.
+1. Live-Installation noch nicht ersetzt; zuerst Testkopie und Baseline-Smoke-Test.
+2. CLI-Implementierung gemaess `02-CLI-SPEC.md`.
+3. GitHub-Actions-Workflows nach dem Push auf GitHub verifizieren.
+
+Bereits erzeugt:
+
+- `dist/Portable.Brave.Updater.v1.3.3.7.7z`
+  - `Portable Brave Updater.exe` (1.3.3.7)
+  - `Bin/7zr.exe` (19.00)
+  - `Bin/Launcher/*.exe` (1.3.3.7)
+  - `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.txt`
+- `dist/SHA256SUMS.txt`
+- `Launcher/Launcher.7z` (9 Launcher, 1.3.3.7)
 
 ## 8. Reproduktion
 
@@ -210,7 +218,7 @@ Hauptprojekt:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.0.0
+FileVersion: 1.3.3.7
 Groesse: 103424 Bytes
 ```
 
@@ -219,6 +227,8 @@ Launcher:
 ```text
 Alle neun Launcher-Projekte erfolgreich gebaut.
 Ausgaben unter Launcher\<Name>\bin\Release\.
+Launcher-Version: 1.3.3.7
+Launcher/Launcher.7z neu erzeugt: 9 EXEs, 314639 Bytes.
 ```
 
 Fork-URLs:

@@ -68,7 +68,7 @@ Verwendet fuer:
 Wichtig:
 
 - Self-Update ist funktional noch aktiv, aber auf den Fork umgestellt.
-- Der Fork hat aktuell keine Releases. Solange `Version.txt` 1.3.0.0 und die EXE 1.3.0.0 sind, wird kein Self-Update angeboten.
+- Der Fork hat aktuell keine Releases. Die neue EXE und `Version.txt` stehen auf 1.3.3.7; ein 1.3.3.7-Build bietet daher kein Self-Update an. Aeltere 1.3.0.0-Builds wuerden erst nach dem Release-Asset erfolgreich aktualisieren.
 - Vor dem ersten Versionsbump muss ein Release-Asset `Portable.Brave.Updater.v<Version>.7z` unter dem Fork existieren, sonst schlaegt der Self-Update-Download fehl.
 - Fuer den Prototyp kann Self-Update spaeter deaktiviert werden.
 
@@ -87,11 +87,19 @@ Konsistent halten:
 |---|---|
 | `Properties/AssemblyInfo.cs` | Dateiversion der Updater-EXE |
 | `Version.txt` | Vom Self-Update gelesene Version |
-| `Launcher/Version.txt` | Launcher-Update-Version |
+| `Launcher/Version.txt` | Launcher-Update-Version, aktuell `1.3.3.7` |
+| `Launcher/Launcher.7z` | Launcher-Archiv fuer `CheckLauncher()` |
 | Release-Tag | z. B. `v1.4.0.0` |
 | Release-Asset | `Portable.Brave.Updater.v1.4.0.0.7z` |
+| `dev-latest` | Pre-Release fuer Dev-Builds, nicht self-update-faehig |
 
 Empfehlung: Semantische Versionierung bzw. die bestehende vierstellige .NET-Version beibehalten.
+
+Wichtig:
+
+- Der Updater und die Launcher stehen aktuell auf `1.3.3.7`.
+- Vor einem stabilen Release muessen `Version.txt` und `AssemblyFileVersion` der Updater-EXE auf dieselbe neue Version gesetzt werden.
+- `dev-latest` darf `Version.txt` niemals aendern.
 
 ## 7. Release-Checkliste
 
@@ -108,6 +116,8 @@ Empfehlung: Semantische Versionierung bzw. die bestehende vierstellige .NET-Vers
 
 - [ ] Hauptprojekt baut in Release.
 - [ ] Launcher bauen oder Release-Launcher uebernehmen.
+- [ ] `Launcher/Launcher.7z` mit den neuen Launchern neu erzeugt.
+- [ ] `Launcher/Version.txt` passt zur Launcher-Version (`1.3.3.7`).
 - [ ] `Bin/7zr.exe` vorhanden.
 - [ ] Smoke-Test: `--help`, `--version`, `--check`.
 - [ ] Update-Test einer Edition.
@@ -129,8 +139,10 @@ Empfehlung: Semantische Versionierung bzw. die bestehende vierstellige .NET-Vers
 - [ ] SHA256-Checksums erzeugen.
 - [ ] Optional: EXE mit Authenticode signieren.
 - [ ] GitHub Release mit Tag und Asset erstellen.
+- [ ] Tag zeigt auf `master`; `Version.txt` auf `master` ist aktuell.
 - [ ] Release-Notes schreiben.
-- [ ] `Version.txt` im Repo aktualisieren.
+- [ ] `Version.txt` nur fuer stabile Releases aktualisieren.
+- [ ] `dev-latest` nur als Pre-Release veroeffentlichen; `Version.txt` unveraendert lassen.
 - [ ] Self-Update-Pfad testen, falls aktiviert.
 
 ## 8. Sicherheit

@@ -1,0 +1,58 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  release:
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: portable-brave-updater
+          path: dist
+
+      - name: Verify version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if (-not $tag.StartsWith("v")) { throw "Tag muss mit v beginnen" }
+          $tagVersion = $tag.Substring(1)
+          $fileVersion = (Get-Content -LiteralPath "Version.txt" -Raw).Trim()
+          $asmVersion = Select-String -LiteralPath "Properties/AssemblyInfo.cs" -Pattern 'AssemblyFileVersion\("([^"]+)"\)' | ForEach-Object { $_.Matches[0].Groups[1].Value } | Select-Object -First 1
+          if ($tagVersion -ne $fileVersion) { throw "Tag $tagVersion != Version.txt $fileVersion" }
+          if ($tagVersion -ne $asmVersion) { throw "Tag $tagVersion != AssemblyFileVersion $asmVersion" }
+          $archive = Get-ChildItem -LiteralPath "dist" -Filter "Portable.Brave.Updater.v*.7z" | Select-Object -First 1
+          if (-not $archive) { throw "Release-Archiv fehlt" }
+          $expected = "Portable.Brave.Updater.v$tagVersion.7z"
+          if ($archive.Name -ne $expected) { throw "Assetname $($archive.Name) != $expected" }
+          "Version OK: $tagVersion"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $archive = Get-ChildItem -LiteralPath "dist" -Filter "Portable.Brave.Updater.v*.7z" | Select-Object -First 1
+          gh release create $tag $archive.FullName "dist/SHA256SUMS.txt" --title "Portable Brave Updater $tag" --notes "Release $tag" --verify-tag
+          if ($LASTEXITCODE -ne 0) { throw "Release-Erstellung fehlgeschlagen" }

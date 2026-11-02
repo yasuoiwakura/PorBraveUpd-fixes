@@ -1,0 +1,53 @@
+name: build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Verify .NET Framework 4.8 toolchain
+        shell: pwsh
+        run: |
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+          if (-not (Test-Path -LiteralPath $vswhere)) { throw "vswhere.exe fehlt" }
+          $path = & $vswhere -latest -products * -requires Microsoft.Net.Component.4.8.TargetingPack -property installationPath
+          if (-not $path) { throw ".NET Framework 4.8 Targeting Pack fehlt" }
+          $tlbimp = Get-ChildItem (Join-Path ${env:ProgramFiles(x86)} "Microsoft SDKs\Windows") -Recurse -Filter TlbImp.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $tlbimp) { throw "TlbImp.exe fehlt" }
+          "Toolchain OK: $path"
+
+      - name: Restore NuGet
+        shell: pwsh
+        run: |
+          if (Get-Command nuget -ErrorAction SilentlyContinue) {
+            nuget restore "Portable Brave Updater.sln"
+          } else {
+            msbuild "Portable Brave Updater.sln" /t:Restore
+          }
+          if ($LASTEXITCODE -ne 0) { throw "NuGet-Restore fehlgeschlagen" }
+
+      - name: Build and package
+        shell: pwsh
+        run: |
+          ./build.ps1 -Configuration Release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: portable-brave-updater
+          path: |
+            dist/Portable.Brave.Updater.v*.7z
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14

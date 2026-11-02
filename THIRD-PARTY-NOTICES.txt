@@ -1,0 +1,26 @@
+Portable Brave Updater - Third-Party Notices
+============================================
+
+7-Zip / 7zr.exe
+----------------
+This software includes 7zr.exe from the 7-Zip project / LZMA SDK.
+
+7-Zip Copyright (C) 1999-2019 Igor Pavlov.
+7zr.exe is public domain (LZMA SDK).
+
+7-Zip is free software; most parts are licensed under the GNU LGPL.
+See https://www.7-zip.org/license.txt for details.
+Source: https://www.7-zip.org/
+
+Bundled file:
+- tools/7zr/7zr.exe
+- Version: 7-Zip (r) 19.00 (x86), 2019-02-21
+- SHA256: 108AB5F1E36F2068E368FE97CD763C639E403CAC8F511C6681EAF19FC585D814
+
+
+Brave
+-----
+Portable Brave Updater is not affiliated, associated, authorized, endorsed by,
+or in any way officially connected with Brave or any of its subsidiaries or
+affiliates. The name Brave as well as related names, marks, emblems and images
+are registered trademarks of their respective owners.

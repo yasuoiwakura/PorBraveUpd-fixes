@@ -110,13 +110,14 @@ Stand: 2026-11-02
 | R06 | Checksums | SHA256 fuer Release-Assets vorhanden |
 | R07 | Self-Update-URLs | zeigen auf Fork oder sind deaktiviert |
 | R08 | Signatur | optional: EXE signiert, SmartScreen ok |
+| R09 | `dev-latest` Pre-Release | `Version.txt` bleibt unveraendert; Updater bietet dev-latest nicht an |
 
 ## 9. Abnahmekriterien
 
 - T01-T08 und C01-C18 bestehen.
 - Mindestens I01, I02, I05, I06, I07, I08, I10, I13 bestehen.
 - G01-G07 bestehen.
-- R01-R07 bestehen.
+- R01-R09 bestehen.
 - Keine offenen MessageBoxen im `--quiet`-Modus.
 - Keine Upstream-URLs im Release-Build, ausser bewusst dokumentiert.
 
@@ -125,4 +126,5 @@ Stand: 2026-11-02
 - Launcher kann beim ersten Start einen Profil-Dialog zeigen, wenn `Profile.txt` fehlt. Deshalb der Fallback auf `Brave.exe`.
 - `--update=all` ist bandwidthintensiv und braucht Zeit.
 - Self-Update ist aktiv, aber auf den Fork umgestellt; Release-Assets fehlen noch.
+- `dev-latest` ist ein manuell herunterladbarer Pre-Release und kein Self-Update-Kanal.
 - Ein echter 32-Bit-Windows-Test ist optional; Windows 11 ist x64-only.
