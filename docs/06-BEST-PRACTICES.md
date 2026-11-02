@@ -58,7 +58,7 @@ Fuer dieses Projekt wird ein **handgeschriebener Parser** empfohlen:
 - Buildscript (`build.ps1`) fuer reproduzierbare Builds.
 - CI auf `windows-latest` mit MSBuild.
 - Release-Artefakte mit Versionsnummer und Checksum.
-- Dev-Builds als CI-Artefakt oder `dev-latest`-Pre-Release; dabei niemals `Version.txt` aendern.
+- Dev-Builds als zeitgestempeltes CI-Artefakt; dabei niemals `Version.txt` aendern.
 - Keine Build-Artefakte ins Repo committen.
 - `Bin/`-Assets entweder aus Release beziehen oder im Build erzeugen.
 - NuGet-Restore explizit ausfuehren.

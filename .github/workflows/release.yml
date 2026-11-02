@@ -5,15 +5,14 @@ on:
     tags:
       - 'v*'
 
-permissions:
-  contents: write
-
 concurrency:
   group: release
   cancel-in-progress: false
 
 jobs:
   build:
+    permissions:
+      contents: read
     uses: ./.github/workflows/build.yml
 
   release:

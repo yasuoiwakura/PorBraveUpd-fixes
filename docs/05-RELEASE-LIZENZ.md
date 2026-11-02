@@ -89,9 +89,9 @@ Konsistent halten:
 | `Version.txt` | Vom Self-Update gelesene Version |
 | `Launcher/Version.txt` | Launcher-Update-Version, aktuell `1.3.3.7` |
 | `Launcher/Launcher.7z` | Launcher-Archiv fuer `CheckLauncher()` |
-| Release-Tag | z. B. `v1.4.0.0` |
-| Release-Asset | `Portable.Brave.Updater.v1.4.0.0.7z` |
-| `dev-latest` | Pre-Release fuer Dev-Builds, nicht self-update-faehig |
+| Release-Tag | z. B. `v1.3.3.7` |
+| Release-Asset | `Portable.Brave.Updater.v1.3.3.7.7z` |
+| Dev-Artefakt | Zeitgestempeltes Actions-Artefakt, nicht self-update-faehig |
 
 Empfehlung: Semantische Versionierung bzw. die bestehende vierstellige .NET-Version beibehalten.
 
@@ -99,7 +99,7 @@ Wichtig:
 
 - Der Updater und die Launcher stehen aktuell auf `1.3.3.7`.
 - Vor einem stabilen Release muessen `Version.txt` und `AssemblyFileVersion` der Updater-EXE auf dieselbe neue Version gesetzt werden.
-- `dev-latest` darf `Version.txt` niemals aendern.
+- Dev-Artefakte duerfen `Version.txt` niemals aendern.
 
 ## 7. Release-Checkliste
 
@@ -142,7 +142,7 @@ Wichtig:
 - [ ] Tag zeigt auf `master`; `Version.txt` auf `master` ist aktuell.
 - [ ] Release-Notes schreiben.
 - [ ] `Version.txt` nur fuer stabile Releases aktualisieren.
-- [ ] `dev-latest` nur als Pre-Release veroeffentlichen; `Version.txt` unveraendert lassen.
+- [ ] Dev-Builds nur als zeitgestempeltes Actions-Artefakt veroeffentlichen; `Version.txt` unveraendert lassen.
 - [ ] Self-Update-Pfad testen, falls aktiviert.
 
 ## 8. Sicherheit

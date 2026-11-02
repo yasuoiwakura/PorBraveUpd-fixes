@@ -42,12 +42,41 @@ jobs:
         run: |
           ./build.ps1 -Configuration Release
 
-      - name: Upload artifact
+      - name: Create build info
+        id: meta
+        shell: pwsh
+        run: |
+          $timestamp = (Get-Date).ToUniversalTime().ToString("yyyyMMdd-HHmmssZ")
+          $version = (Get-Content -LiteralPath "Version.txt" -Raw).Trim()
+          @(
+            "Timestamp (UTC): $timestamp"
+            "Commit: ${{ github.sha }}"
+            "Ref: ${{ github.ref_name }}"
+            "Version: $version"
+            "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ) | Set-Content -LiteralPath "dist/BUILD-INFO.txt" -Encoding UTF8
+          "timestamp=$timestamp" >> $env:GITHUB_OUTPUT
+
+      - name: Upload release artifact
+        if: github.ref != 'refs/heads/dev'
         uses: actions/upload-artifact@v4
         with:
           name: portable-brave-updater
           path: |
             dist/Portable.Brave.Updater.v*.7z
             dist/SHA256SUMS.txt
+            dist/BUILD-INFO.txt
           if-no-files-found: error
           retention-days: 14
+
+      - name: Upload dev artifact
+        if: github.ref == 'refs/heads/dev'
+        uses: actions/upload-artifact@v4
+        with:
+          name: portable-brave-updater-dev-${{ steps.meta.outputs.timestamp }}-${{ github.sha }}
+          path: |
+            dist/Portable.Brave.Updater.v*.7z
+            dist/SHA256SUMS.txt
+            dist/BUILD-INFO.txt
+          if-no-files-found: error
+          retention-days: 30

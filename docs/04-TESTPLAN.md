@@ -110,7 +110,7 @@ Stand: 2026-11-02
 | R06 | Checksums | SHA256 fuer Release-Assets vorhanden |
 | R07 | Self-Update-URLs | zeigen auf Fork oder sind deaktiviert |
 | R08 | Signatur | optional: EXE signiert, SmartScreen ok |
-| R09 | `dev-latest` Pre-Release | `Version.txt` bleibt unveraendert; Updater bietet dev-latest nicht an |
+| R09 | Dev-Artefakt | Name enthaelt Zeitstempel und SHA; `BUILD-INFO.txt` vorhanden; kein Release/Tag |
 
 ## 9. Abnahmekriterien
 
@@ -126,5 +126,5 @@ Stand: 2026-11-02
 - Launcher kann beim ersten Start einen Profil-Dialog zeigen, wenn `Profile.txt` fehlt. Deshalb der Fallback auf `Brave.exe`.
 - `--update=all` ist bandwidthintensiv und braucht Zeit.
 - Self-Update ist aktiv, aber auf den Fork umgestellt; Release-Assets fehlen noch.
-- `dev-latest` ist ein manuell herunterladbarer Pre-Release und kein Self-Update-Kanal.
+- Dev-Builds sind zeitgestempelte Actions-Artefakte und kein Self-Update-Kanal.
 - Ein echter 32-Bit-Windows-Test ist optional; Windows 11 ist x64-only.

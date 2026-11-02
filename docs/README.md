@@ -57,6 +57,6 @@ Geplante Kernfunktionen:
 - Launcher auf 1.3.3.7 und `Launcher.7z` neu erzeugt: erledigt (2026-11-02)
 - Build: erfolgreich (2026-11-02)
 - Release-Paket lokal erzeugt: `dist/Portable.Brave.Updater.v1.3.3.7.7z`
-- GitHub-Actions-Workflows: angelegt (`build`, `ci`, `dev-latest`, `release`)
+- GitHub-Actions-Workflows: angelegt (`build`, `ci`, `release`; Dev-Builds als Artefakt)
 - Implementierung CLI: nicht begonnen
 - Baseline-Smoke-Test mit einer Edition: offen

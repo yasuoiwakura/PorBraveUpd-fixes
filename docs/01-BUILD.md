@@ -214,10 +214,11 @@ Workflows:
 
 | Datei | Trigger | Zweck |
 |---|---|---|
-| `.github/workflows/build.yml` | `workflow_call` | Reusable Build, Paketierung, Artifact |
-| `.github/workflows/ci.yml` | Push auf `master`/`feat/**`, PR, manuell | CI-Build ohne Release |
-| `.github/workflows/dev-latest.yml` | Push auf `dev`, manuell | Dev-Build als Pre-Release `dev-latest` |
+| `.github/workflows/build.yml` | `workflow_call` | Reusable Build, Paketierung, Artifacts |
+| `.github/workflows/ci.yml` | Push auf `master`/`dev`, PR, manuell | CI-Build ohne Release |
 | `.github/workflows/release.yml` | Tags `v*` | Stabiles GitHub Release |
+
+`dev-latest.yml` gibt es nicht mehr. Dev-Builds werden als zeitgestempeltes Actions-Artefakt veroeffentlicht, nicht als GitHub Release.
 
 Ablauf in `build.yml`:
 
@@ -226,7 +227,8 @@ Ablauf in `build.yml`:
 3. .NET Framework 4.8 Targeting Pack und `TlbImp.exe` pruefen
 4. NuGet-Restore
 5. `build.ps1 -Configuration Release` ausfuehren
-6. Artifact `portable-brave-updater` hochladen
+6. `dist/BUILD-INFO.txt` mit Zeitstempel, Commit, Ref, Version und Run-URL erzeugen
+7. Artifact(s) hochladen
 
 `build.ps1`:
 
@@ -236,13 +238,20 @@ Ablauf in `build.yml`:
 - erzeugt `dist/Portable.Brave.Updater.v<Version>.7z`
 - erzeugt `dist/SHA256SUMS.txt`
 
-Dev-latest:
+Artifacts:
 
-- Tag: `dev-latest`
-- Asset: `Portable.Brave.Updater.dev-latest.7z`
-- Pre-Release
-- `Version.txt` wird **nicht** geaendert
-- Der Updater zieht `dev-latest` daher nicht automatisch
+| Branch/Event | Artifact |
+|---|---|
+| `dev` Push oder manuell auf `dev` | `portable-brave-updater-dev-<YYYYMMDD-HHMMSSZ>-<sha>` |
+| `master`, PR, Release-Tag | `portable-brave-updater` |
+
+Dev-Artefakt:
+
+- enthaelt `.7z`, `SHA256SUMS.txt`, `BUILD-INFO.txt`
+- Retention: 30 Tage
+- Berechtigungen: nur `contents: read`
+- kein Release, kein Tag, kein Repo-Write
+- wird nicht automatisch vom Updater geladen; nur manueller Download
 
 Release:
 
@@ -251,6 +260,7 @@ Release:
 - laedt `.7z` und `SHA256SUMS.txt` hoch
 - kein automatisches Commit von `Version.txt`
 - Der Tag muss auf `master` zeigen; der Updater liest `Version.txt` von `master`.
+- Der Workflow erscheint in der Actions-Liste erst, wenn `release.yml` auf dem Default-Branch `master` liegt und/oder ein Tag `v*` gepusht wurde.
 
 Hinweis: `windows-latest` bringt VS 2022 und .NET Framework 4.8 in der Regel mit. Der Workflow prueft das explizit und bricht sonst mit einer klaren Meldung ab.
 
