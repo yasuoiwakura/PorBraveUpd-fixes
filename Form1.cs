@@ -80,6 +80,24 @@ namespace Brave_Updater
                 WindowState = FormWindowState.Minimized;
                 Shown += async (sender, args) => await RunCliAsync();
             }
+            else
+            {
+                var portableAppsButton = new Button
+                {
+                    Name = "buttonPortableApps",
+                    Text = "PortableApps...",
+                    Location = new Point(10, 295),
+                    Size = new Size(180, 25)
+                };
+                portableAppsButton.Click += delegate
+                {
+                    using (var dialog = new PortableAppsSettingsForm(applicationPath))
+                    {
+                        dialog.ShowDialog(this);
+                    }
+                };
+                Controls.Add(portableAppsButton);
+            }
             try
             {
                 for (int i = 0; i <= 7; i++)

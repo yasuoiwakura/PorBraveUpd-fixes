@@ -1,6 +1,6 @@
 # 08 - PortableApps.com Integration (Planned Feature)
 
-Status: planned, not implemented  
+Status: Phase 1 implemented; Platform launch test pending  
 Last updated: 2026-11-02
 
 ## 1. Summary
@@ -17,7 +17,26 @@ The planned feature is deliberately small:
 
 The goal is a clean, low-maintenance integration without adding another process that fights with taskbar or app-running detection.
 
-### 1.1 Prototype status (2026-11-02)
+### 1.1 Implemented Phase 1 (2026-11-02)
+
+The updater GUI now has a **PortableApps...** button. It opens a small settings dialog and can write:
+
+- `App\AppInfo\appinfo.ini`
+- `appicon*.ico` and `appicon*_*.png`
+- `PortableAppsStart-stable-x64.bat`
+- `PortableAppsUpdate-stable-x64.bat`
+- `PortableBraveUpdater.ini`
+
+The generator backs up existing `App\AppInfo`, generated batches and the settings file before overwriting. Icons are generated from the installed Brave icon and the updater icon. No raster files need to be shipped in the package.
+
+The generated `appinfo.ini` uses:
+
+- `Start1=PortableAppsStart-stable-x64.bat` -> `Brave (Launcher)`
+- `Start2=PortableAppsUpdate-stable-x64.bat` -> `Brave (Update then Start)`
+
+Background: `appinfo.ini` `Start` is treated as a file path by the Platform. It does not parse quoted paths or arguments, so the generated no-space batches are required.
+
+### 1.2 Earlier manual prototype
 
 A minimal metadata-only PAF wrapper was created in the live folder:
 
@@ -33,29 +52,29 @@ It contains:
 - `appicon1_16/32/75/128/256.png`
 - `appicon2_16/32/75/128/256.png`
 
-The prototype exposes two Start entries:
+The earlier manual prototype exposed two Start entries:
 
 - `Brave (Launcher)` -> `Brave Launcher.exe`
-- `Brave (Update then Start)` -> `PortableAppsUpdate.bat`
+- `Brave (Update then Start)` -> a temporary `PortableAppsUpdate.bat`
 
 The first attempt used quoted `Start` values with arguments. The Platform treated the quotes as part of the path and did not parse the arguments, so the entries failed with "Could not find". The prototype was corrected to:
 
 - an unquoted launcher path for Start1
 - a no-space batch file for Start2, because `appinfo.ini` `Start` does not support command-line arguments reliably
 
-`PortableAppsUpdate.bat` calls:
+The temporary `PortableAppsUpdate.bat` was replaced by the app-generated `PortableAppsUpdate-stable-x64.bat`. The app also generates `PortableAppsStart-stable-x64.bat` for the launcher entry. The generated update batch calls:
 
 ```bat
-"Portable Brave Updater.exe" --update=existing --launch-brave=stable:x64 --quit-after --log "%~dp0PortableAppsUpdate.log"
+"Portable Brave Updater.exe" --update=existing --launch-brave=stable:x64 --quit-after --log "%~dp0PortableAppsUpdate.log" -- %*
 ```
 
 The batch itself was tested directly from the live folder: it detected the current Brave installation, launched `Brave Launcher.exe`, and exited with code 0. The Platform entry test is still pending.
 
-If the Platform also rejects the batch as a Start target, the fallback is a no-space EXE shim or the non-PAF `.pap.ini` route. If the direct unquoted `Brave Launcher.exe` Start still fails because of the space in the filename, the next fallback is a no-space `PortableAppsStart.bat` wrapper.
+If the Platform also rejects the batch as a Start target, the fallback is a no-space EXE shim or the non-PAF `.pap.ini` route.
 
-## 2. Current local state
+## 2. Initial local state (before Phase 1)
 
-Inspection findings from `P:\PA\PortableApps\BravePortable`:
+Inspection findings from `P:\PA\PortableApps\BravePortable` before the integration:
 
 - No `App\AppInfo\appinfo.ini`
 - No `App\AppInfo\appicon.ico` or `appicon_*.png`

@@ -15,7 +15,7 @@ CLI release for the fork.
 - Optional log file and wait-for-Brave handling.
 - `--launch-brave` support for the existing launcher with fallback to `Brave.exe`.
 - Batch test scripts `update_and_close.bat` and `update_and_run_brave.bat` included in the package.
-- `PortableAppsUpdate.bat` support script for the PortableApps update-on-start entry.
+- PortableApps integration dialog: generates `appinfo.ini`, icons, no-space start/update batches and a settings file with backup of existing files.
 
 ### Changed
 

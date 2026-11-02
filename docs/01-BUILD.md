@@ -319,7 +319,7 @@ Main project:
 ```text
 bin\Release\Portable Brave Updater.exe
 FileVersion: 1.3.3.37
-Size: 124416 bytes
+Size: 135680 bytes
 ```
 
 Launchers: all nine projects built successfully.
