@@ -164,18 +164,18 @@ Done on 2026-11-02:
 
 Open:
 
-1. Live installation replacement for `1.3.3.337` and baseline update test.
-2. Platform launch test for the two PortableApps entries.
-3. Verify the release workflow after pushing the `v1.3.3.337` tag.
+1. Live installation replacement for `1.3.37` and baseline update test.
+2. Platform launch test for the PortableApps entries.
+3. Verify the release workflow after pushing the `v1.3.37` tag.
 
-`1.3.3.37` was released earlier on 2026-11-02. The PortableApps integration and runtime dependency preflight are part of `1.3.3.337`.
+`1.3.3.37` was released earlier on 2026-11-02. The PortableApps integration and runtime dependency preflight are part of `1.3.37`.
 
 CLI MVP implemented and locally verified with `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log` and `--wait-for-brave`.
 
 Already produced:
 
-- `dist/Portable.Brave.Updater.v1.3.3.337.7z`
-  - `Portable Brave Updater.exe` (1.3.3.337)
+- `dist/Portable.Brave.Updater.v1.3.37.7z`
+  - `Portable Brave Updater.exe` (1.3.37)
   - `Bin/7zr.exe` (19.00)
   - `Bin/Launcher/*.exe` (1.3.3.7)
   - `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.txt`
@@ -223,7 +223,7 @@ Main project:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.3.337
+FileVersion: 1.3.37
 Size: 143360 bytes
 ```
 

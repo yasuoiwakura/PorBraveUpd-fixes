@@ -1217,7 +1217,7 @@ namespace Brave_Updater
                     var version = reader.ReadToEnd().Trim();
                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Brave Updater.exe");
                     versionLabel.Text = testm.FileVersion + "  >>> "+ version;
-                    if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
+                    if (IsNewerVersion(version, testm.FileVersion))
                     {
                         Controls.Add(groupBoxupdate);
                         groupBox1.Enabled = false;
@@ -1265,6 +1265,18 @@ namespace Brave_Updater
                 }
             }
         }
+        private static bool IsNewerVersion(string candidate, string current)
+        {
+            Version candidateVersion;
+            Version currentVersion;
+            if (!Version.TryParse(candidate, out candidateVersion) || !Version.TryParse(current, out currentVersion))
+            {
+                return false;
+            }
+
+            return candidateVersion > currentVersion;
+        }
+
         private void CheckLauncher()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -1276,7 +1288,7 @@ namespace Brave_Updater
                 {
                     var version = reader.ReadToEnd().Trim();
                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\Brave Launcher.exe");
-                    if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
+                    if (IsNewerVersion(version, testm.FileVersion))
                     {
                         reader.Close();
                         try

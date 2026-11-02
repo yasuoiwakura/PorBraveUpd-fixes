@@ -2,7 +2,7 @@
 
 All notable changes to this fork.
 
-## 1.3.3.337 - 2026-11-02
+## 1.3.37 - 2026-11-02
 
 PortableApps integration and runtime-dependency release.
 
@@ -13,7 +13,7 @@ PortableApps integration and runtime-dependency release.
 
 ### Changed
 
-- Updater version is `1.3.3.337`.
+- Updater version is `1.3.37`.
 - Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
 - The static `PortableAppsUpdate.bat` was removed. The app now generates `PortableAppsUpdate-stable-x64.bat` and `PortableAppsStart-stable-x64.bat`.
 - PortableApps icons use the Brave icon for the launcher entries and the updater icon for the update entry.
@@ -32,7 +32,7 @@ PortableApps integration and runtime-dependency release.
 ### Notes
 
 - No code signing; self-update without hash verification.
-- Release asset: `Portable.Brave.Updater.v1.3.3.337.7z`.
+- Release asset: `Portable.Brave.Updater.v1.3.37.7z`.
 
 ## 1.3.3.37 - 2026-11-02
 
