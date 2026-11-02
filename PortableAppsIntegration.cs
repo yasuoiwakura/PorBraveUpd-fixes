@@ -274,6 +274,10 @@ namespace Brave_Updater
             {
                 builder.AppendLine("Start" + (i + 1) + "=" + entries[i].Start);
                 builder.AppendLine("Name" + (i + 1) + "=" + entries[i].Name);
+                if (!string.IsNullOrEmpty(entries[i].Description))
+                {
+                    builder.AppendLine("Description" + (i + 1) + "=" + entries[i].Description);
+                }
             }
 
             return builder.ToString();
@@ -284,18 +288,28 @@ namespace Brave_Updater
             var entries = new List<Entry>();
             if (settings.IncludeUpdaterApp)
             {
-                entries.Add(new Entry("PortableAppsUpdater-stable-x64.bat", "Portable Brave Updater", "updater"));
+                entries.Add(new Entry("PortableAppsUpdater-stable-x64.bat", "Portable Brave Updater", "updater", null));
             }
             if (settings.IncludeLauncher)
             {
-                entries.Add(new Entry("PortableAppsStart-stable-x64.bat", "Brave", "brave"));
+                entries.Add(new Entry("PortableAppsStart-stable-x64.bat", "Brave", "brave", FormatEditionDescription(settings.Edition)));
             }
             if (settings.IncludeUpdater)
             {
-                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (updated)", "selected"));
+                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (updated)", "selected", "Update Brave, then start Brave"));
             }
 
             return entries;
+        }
+
+        private static string FormatEditionDescription(string edition)
+        {
+            if (string.IsNullOrEmpty(edition))
+            {
+                return "stable, x64";
+            }
+
+            return edition.Replace(":", ", ");
         }
 
         private static int GetIconCount(PortableAppsSettings settings)
@@ -714,12 +728,14 @@ namespace Brave_Updater
             public readonly string Start;
             public readonly string Name;
             public readonly string Icon;
+            public readonly string Description;
 
-            public Entry(string start, string name, string icon)
+            public Entry(string start, string name, string icon, string description)
             {
                 Start = start;
                 Name = name;
                 Icon = icon;
+                Description = description;
             }
         }
 

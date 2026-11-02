@@ -21,6 +21,7 @@ PortableApps integration and runtime-dependency release.
 - PortableApps dialog now has three menu entries: `Portable Brave Updater`, `Brave` and `Brave (updated)`; the icon dropdown sits directly next to `Brave (updated)`.
 - PortableApps dialog lets you choose the update entry icon (`Updater icon` or `Brave icon`). The choice is saved as `UpdateIcon` in `PortableBraveUpdater.ini`.
 - Menu icons follow the selected entries: `appicon` for the main entry and `appicon1..N` for `Start1..N`.
+- Menu descriptions clarify the Brave entries: `stable, x64` for `Brave` and `Update Brave, then start Brave` for `Brave (updated)`. The updater entry keeps the updater version.
 - Shortened the PortableApps dialog text and moved the experimental/tracking note into a compact warning.
 
 ### Validation
