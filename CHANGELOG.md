@@ -1,32 +1,33 @@
 # Changelog
 
-Alle nennenswerten Änderungen an diesem Fork.
+All notable changes to this fork.
 
 ## 1.3.3.7 - 2026-11-02
 
-Erstes Fork-Release auf Basis von Portable Brave Updater 1.3.0.0.
+First fork release based on Portable Brave Updater 1.3.0.0.
 
-### Geändert
+### Changed
 
-- Update- und Launcher-URLs auf `yasuoiwakura/PorBraveUpd-fixes` umgestellt.
-- Updater und alle neun Launcher auf .NET Framework 4.8 retargetet.
-- Updater und Launcher auf Version `1.3.3.7` angehoben.
-- `Launcher/Launcher.7z` mit den neuen 1.3.3.7-Launchern neu erzeugt.
-- Self-Update prüft und lädt jetzt gegen den Fork.
+- Switched update and launcher URLs to `yasuoiwakura/PorBraveUpd-fixes`.
+- Retargeted the updater and all nine launchers to .NET Framework 4.8.
+- Bumped updater and launchers to version `1.3.3.7`.
+- Rebuilt `Launcher/Launcher.7z` with the new 1.3.3.7 launchers.
+- Self-update now checks and downloads from the fork.
 
-### Build und Release
+### Build and release
 
-- `build.ps1` für Build, Launcher-Prüfung, 7z-Paketierung und SHA256-Checksums.
-- `tools/7zr/7zr.exe` inklusive Drittlizenzhinweis.
-- GitHub Actions: CI für `master`/`dev`/PRs, zeitgestempelte Dev-Artefakte und tag-basiertes Release.
-- Dev-Builds benötigen nur lesende Rechte und erzeugen keine GitHub Releases.
+- `build.ps1` for build, launcher validation, 7z packaging and SHA256 checksums.
+- `tools/7zr/7zr.exe` including third-party notice.
+- GitHub Actions: CI for `master`/`dev`/PRs, timestamped dev artifacts and tag-based releases.
+- Dev builds require read-only permissions and do not create GitHub Releases.
 
-### Dokumentation
+### Documentation
 
-- Analyse, Build, CLI-Spezifikation, Architektur, Testplan, Release/Lizenz, Best Practices, Installationsprotokoll und ADRs.
+- Analysis, build, CLI specification, architecture, test plan, release/license, best practices, installation log and ADRs.
+- Documentation is written in English.
 
-### Hinweis
+### Notes
 
-- Die CLI-Parameter sind spezifiziert, aber noch nicht implementiert.
-- Self-Update-Assets werden mit diesem Release bereitgestellt.
-- Keine Code-Signierung; Self-Update ohne Hashprüfung.
+- CLI parameters are specified but not implemented yet.
+- Self-update assets are provided by this release.
+- No code signing; self-update without hash verification.

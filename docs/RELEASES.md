@@ -1,9 +1,9 @@
 # Releases
 
-Release Notes liegen unter `RELEASE-NOTES-<Version>.md`. Die vollstaendige Historie steht in `../CHANGELOG.md`.
+Release notes live in `RELEASE-NOTES-<version>.md`. The full history is in `../CHANGELOG.md`.
 
-GitHub Milestones werden fuer dieses Projekt nicht verwendet. Releases werden ueber Tags `v*` und den Workflow `.github/workflows/release.yml` erzeugt.
+GitHub Milestones are not used for this project. Releases are created from tags `v*` by `.github/workflows/release.yml`.
 
-| Version | Datum | Notes |
+| Version | Date | Notes |
 |---|---|---|
 | 1.3.3.7 | 2026-11-02 | [RELEASE-NOTES-1.3.3.7.md](RELEASE-NOTES-1.3.3.7.md) |

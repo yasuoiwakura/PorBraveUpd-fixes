@@ -1,89 +1,89 @@
-# 01 - Build und Entwicklungsumgebung
+# 01 - Build and Development Environment
 
-Stand: 2026-11-02
+Last updated: 2026-11-02
 
-## 1. Zielbild
+## 1. Target state
 
-- Ziel-Framework: **.NET Framework 4.8** fuer Hauptprojekt und Launcher.
-- Build-Tool: **MSBuild aus Visual Studio 2022 Build Tools** (oder Community).
-- Kein .NET-Framework-4.0-Targeting mehr.
-- Kein .NET-SDK-Zwang; `dotnet build` ist fuer diese alten Projektdateien nicht der primaere Weg.
+- Target framework: **.NET Framework 4.8** for the main project and launchers.
+- Build tool: **MSBuild from Visual Studio 2022 Build Tools** (or Community).
+- No .NET Framework 4.0 targeting.
+- No .NET SDK requirement; `dotnet build` is not the primary path for these old project files.
 
-Begruendung: .NET Framework 4.8 ist aktiv unterstuetzt und auf Windows 11 vorinstalliert. .NET Framework 4.0 ist seit 2016 out of support und mit VS 2022 nicht mehr ohne Workaround baubar.
+Reason: .NET Framework 4.8 is actively supported and preinstalled on Windows 11. .NET Framework 4.0 has been out of support since 2016 and cannot be built with VS 2022 without workarounds.
 
-### Aktueller Installationsstand (2026-11-02)
+### Current environment (2026-11-02)
 
-Die Build-Umgebung ist eingerichtet. Details und exakte Befehle stehen in `07-INSTALLATIONSPROTOKOLL.md`.
+The build environment is configured. Exact commands and results are in `07-INSTALLATION-LOG.md`.
 
-| Merkmal | Wert |
+| Item | Value |
 |---|---|
 | Build Tools | Visual Studio Build Tools 2022, 17.14.25 |
-| InstallationPath | `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools` |
+| Installation path | `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools` |
 | MSBuild | `17.14.40.60911` |
 | Workload | .NET Desktop Build Tools |
-| .NET Framework 4.8 SDK | installiert |
-| .NET Framework 4.8 Targeting Pack | installiert |
-| Windows 11 SDK | 26100 installiert |
+| .NET Framework 4.8 SDK | installed |
+| .NET Framework 4.8 Targeting Pack | installed |
+| Windows 11 SDK | 26100 installed |
 | TlbImp | `C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\TlbImp.exe` |
 
-## 2. Was installiert werden muss
+## 2. Required components
 
-### Pflicht
+### Required
 
-| Komponente | Zweck |
+| Component | Purpose |
 |---|---|
-| Visual Studio 2022 Build Tools oder Community | MSBuild, Roslyn, NuGet |
-| Workload ".NET Desktop Build Tools" bzw. ".NET-Desktopentwicklung" | WinForms-Build |
-| .NET Framework 4.8 Targeting Pack | Referenzassemblies fuer `net48` |
-| Windows 11 SDK | `tlbimp.exe` fuer COM-Referenz `IWshRuntimeLibrary` |
+| Visual Studio 2022 Build Tools or Community | MSBuild, Roslyn, NuGet |
+| ".NET Desktop Build Tools" workload | WinForms build |
+| .NET Framework 4.8 Targeting Pack | Reference assemblies for `net48` |
+| Windows 11 SDK | `tlbimp.exe` for the `IWshRuntimeLibrary` COM reference |
 | Git | Repository |
-| 7-Zip oder `7zr.exe` | Release-Paket erstellen bzw. `Bin/` bereitstellen |
+| 7-Zip or `7zr.exe` | Create release packages / provide `Bin/` |
 
 ### Optional
 
-| Komponente | Zweck |
+| Component | Purpose |
 |---|---|
-| GitHub CLI (`gh`) | Releases und PRs |
-| Visual Studio Code | Leichtere Editor-Alternative |
-| Code-Signing-Zertifikat | Signierte Releases, weniger SmartScreen-Warnungen |
+| GitHub CLI (`gh`) | Releases and PRs |
+| Visual Studio Code | Lightweight editor alternative |
+| Code-signing certificate | Signed releases, fewer SmartScreen warnings |
 
-### Nicht noetig
+### Not required
 
 - .NET Framework 4.0 Developer/Targeting Pack.
 - Visual Studio 2019.
 - .NET 8/9 SDK.
 
-## 3. Installation Schritt fuer Schritt
+## 3. Installation step by step
 
-### Variante A: Build Tools (schlank, empfohlen)
+### Option A: Build Tools (lean, recommended)
 
-1. Installer starten:
+1. Start the installer:
 
    ```powershell
    winget install Microsoft.VisualStudio.2022.BuildTools
    ```
 
-   Hinweis: Wenn `winget` in der erhoehten PowerShell nicht im `PATH` liegt, den vollstaendigen Pfad verwenden:
+   Note: if `winget` is not in `PATH` in the elevated PowerShell, use the full path:
 
    ```powershell
    & "$env:LOCALAPPDATA\Microsoft\WindowsApps\winget.exe" install Microsoft.VisualStudio.2022.BuildTools
    ```
 
-   Oder den Visual Studio Installer direkt oeffnen.
+   Or open the Visual Studio Installer directly.
 
-2. Visual Studio Installer oeffnen, "Aendern" waehlen.
-3. Workload **".NET Desktop Build Tools"** aktivieren.
-4. Unter "Einzelne Komponenten" sicherstellen:
+2. Open the Visual Studio Installer and choose "Modify".
+3. Enable the **".NET Desktop Build Tools"** workload.
+4. Under "Individual components", make sure these are selected:
    - `.NET Framework 4.8 targeting pack`
    - `.NET Framework 4.8 SDK`
-   - `Windows 11 SDK` (oder die aktuell angebotene Windows-SDK-Version)
+   - `Windows 11 SDK` (or the currently offered Windows SDK)
    - `NuGet targets and build tasks`
    - `C# and Visual Basic Roslyn compilers`
-5. Installation abschliessen.
+5. Finish the installation.
 
-### Variante A2: Bestehende Build Tools per CLI modifizieren
+### Option A2: Modify existing Build Tools via CLI
 
-Wenn die Build Tools bereits installiert sind, keine Neuinstallation ausfuehren, sondern die Instanz modifizieren:
+If the Build Tools are already installed, do not reinstall; modify the instance:
 
 ```powershell
 $installer = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
@@ -96,33 +96,33 @@ $installPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools"
   --passive --norestart
 ```
 
-Bewusst ohne `--includeRecommended`, damit nicht unnoetig .NET 8/9 SDK installiert wird. Die Workload bringt .NET 4.8 SDK, MSBuild, Roslyn und NuGet mit.
+Deliberately without `--includeRecommended`, so .NET 8/9 SDK is not installed unnecessarily. The workload brings in .NET 4.8 SDK, MSBuild, Roslyn and NuGet.
 
-### Variante B: Community (mit IDE)
+### Option B: Community (with IDE)
 
-1. Installer starten:
+1. Start the installer:
 
    ```powershell
    winget install Microsoft.VisualStudio.2022.Community
    ```
 
-2. Workload **".NET-Desktopentwicklung"** aktivieren.
-3. Einzelne Komponenten wie bei Variante A ergaenzen.
-4. Installation abschliessen.
+2. Enable the **".NET desktop development"** workload.
+3. Add the individual components from Option A.
+4. Finish the installation.
 
 ### 7-Zip
 
-Fuer das Erstellen des Release-`.7z`:
+To create the release `.7z`:
 
 ```powershell
 winget install 7zip.7zip
 ```
 
-Fuer den Prototyp reicht es, `Bin/7zr.exe` aus dem offiziellen Release zu uebernehmen.
+For the prototype, using `tools/7zr/7zr.exe` is enough.
 
-## 4. Projekt auf .NET Framework 4.8 retargeten
+## 4. Retarget the project to .NET Framework 4.8
 
-### Hauptprojekt
+### Main project
 
 In `Portable Brave Updater.csproj`:
 
@@ -130,31 +130,33 @@ In `Portable Brave Updater.csproj`:
 <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
 ```
 
-In `app.config` optional:
+In `app.config` (optional):
 
 ```xml
 <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8" />
 ```
 
-### Launcher
+### Launchers
 
-In allen neun Launcher-CSProjects:
+In all nine launcher CSProjects:
 
 ```xml
 <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
 ```
 
-Betroffen sind alle Projekte unter `Launcher/`, z. B.:
+Affected projects under `Launcher/`, for example:
 
 - `Launcher/Brave Stable x64 Launcher/Brave Stable x64 Launcher.csproj`
 - `Launcher/Brave Beta x86 Launcher/Brave Beta x86 Launcher.csproj`
-- usw.
+- etc.
 
-Nach dem Retargeting muessen die Launcher neu gebaut werden. Fuer den ersten Prototyp kann man stattdessen die vorcompilierten Launcher aus dem offiziellen Release verwenden.
+After retargeting, the launchers must be rebuilt. For the first prototype, precompiled launchers from the official release can be used instead.
 
-## 5. Fehlende `Bin/`-Assets
+## 5. `Bin/` assets
 
-Das Repo enthaelt keinen `Bin/`-Ordner. Das offizielle Release-`.7z` enthaelt:
+The repository does not contain a compiled `Bin/` folder. It does contain `tools/7zr/7zr.exe`; `build.ps1` copies it into the staging `Bin/` folder.
+
+The official release `.7z` contains:
 
 ```text
 Bin/7zr.exe
@@ -170,118 +172,118 @@ Bin/Launcher/Brave Stable x86 Launcher.exe
 Portable Brave Updater.exe
 ```
 
-### Schnellster Prototyp
+### Fastest prototype
 
-1. Offizielles Release `Portable.Brave.Updater.v1.3.0.0.7z` entpacken.
-2. Entpackten Inhalt als Basis verwenden.
-3. Neu gebaute `Portable Brave Updater.exe` hineinkopieren.
-4. Testen.
+1. Extract the official release `Portable.Brave.Updater.v1.3.0.0.7z`.
+2. Use the extracted content as the base.
+3. Copy the newly built `Portable Brave Updater.exe` into it.
+4. Test.
 
-Damit umgeht man zunaechst die 4.0-Launcher-Problematik vollstaendig.
+This avoids the legacy .NET 4.0 launcher problem.
 
-### Sauberer Release-Build
+### Clean release build
 
-1. Launcher auf 4.8 retargeten.
-2. Alle neun Launcher bauen.
-3. Ausgaben nach `Bin/Launcher/` kopieren.
-4. `7zr.exe` aus dem LZMA SDK oder dem offiziellen Release nach `Bin/` kopieren.
-5. Hauptprojekt bauen.
-6. Alles mit 7-Zip paketieren.
+1. Retarget the launchers to 4.8.
+2. Build all nine launchers.
+3. Copy outputs to `Bin/Launcher/`.
+4. Copy `7zr.exe` from `tools/7zr/` or the official release into `Bin/`.
+5. Build the main project.
+6. Package everything with 7-Zip.
 
-## 6. Build-Befehle
+## 6. Build commands
 
-### Hauptprojekt
+### Main project
 
 ```powershell
 msbuild "Portable Brave Updater.sln" /p:Configuration=Release /p:Platform="Any CPU"
 ```
 
-Ausgabe: `bin\Release\Portable Brave Updater.exe`
+Output: `bin\Release\Portable Brave Updater.exe`
 
-### Launcher
+### Launchers
 
-Beispiel fuer einen Launcher:
+Example for one launcher:
 
 ```powershell
 msbuild "Launcher\Brave Stable x64 Launcher\Brave Stable x64 Launcher.sln" /p:Configuration=Release
 ```
 
-`build.ps1` baut alle Launcher und stellt das Release-Paket zusammen.
+`build.ps1` builds all launchers and assembles the release package.
 
 ## 7. GitHub Actions
 
 Workflows:
 
-| Datei | Trigger | Zweck |
+| File | Trigger | Purpose |
 |---|---|---|
-| `.github/workflows/build.yml` | `workflow_call` | Reusable Build, Paketierung, Artifacts |
-| `.github/workflows/ci.yml` | Push auf `master`/`dev`, PR, manuell | CI-Build ohne Release |
-| `.github/workflows/release.yml` | Tags `v*` | Stabiles GitHub Release |
+| `.github/workflows/build.yml` | `workflow_call` | Reusable build, packaging, artifacts |
+| `.github/workflows/ci.yml` | Push to `master`/`dev`, PR, manual | CI build without release |
+| `.github/workflows/release.yml` | Tags `v*` | Stable GitHub release |
 
-`dev-latest.yml` gibt es nicht mehr. Dev-Builds werden als zeitgestempeltes Actions-Artefakt veroeffentlicht, nicht als GitHub Release.
+`dev-latest.yml` no longer exists. Dev builds are published as timestamped Actions artifacts, not GitHub Releases.
 
-Ablauf in `build.yml`:
+`build.yml` flow:
 
 1. Checkout
-2. MSBuild bereitstellen
-3. .NET Framework 4.8 Targeting Pack und `TlbImp.exe` pruefen
-4. NuGet-Restore
-5. `build.ps1 -Configuration Release` ausfuehren
-6. `dist/BUILD-INFO.txt` mit Zeitstempel, Commit, Ref, Version und Run-URL erzeugen
-7. Artifact(s) hochladen
+2. Set up MSBuild
+3. Verify .NET Framework 4.8 Targeting Pack and `TlbImp.exe`
+4. NuGet restore
+5. Run `build.ps1 -Configuration Release`
+6. Create `dist/BUILD-INFO.txt` with timestamp, commit, ref, version and run URL
+7. Upload artifact(s)
 
 `build.ps1`:
 
-- baut Hauptprojekt und alle neun Launcher
-- stellt `dist/staging` zusammen
-- kopiert `tools/7zr/7zr.exe` nach `Bin/7zr.exe`
-- erzeugt `dist/Portable.Brave.Updater.v<Version>.7z`
-- erzeugt `dist/SHA256SUMS.txt`
+- builds the main project and all nine launchers
+- assembles `dist/staging`
+- copies `tools/7zr/7zr.exe` to `Bin/7zr.exe`
+- creates `dist/Portable.Brave.Updater.v<Version>.7z`
+- creates `dist/SHA256SUMS.txt`
 
 Artifacts:
 
-| Branch/Event | Artifact |
+| Branch/event | Artifact |
 |---|---|
-| `dev` Push oder manuell auf `dev` | `portable-brave-updater-dev-<YYYYMMDD-HHMMSSZ>-<sha>` |
-| `master`, PR, Release-Tag | `portable-brave-updater` |
+| `dev` push or manual run on `dev` | `portable-brave-updater-dev-<YYYYMMDD-HHMMSSZ>-<sha>` |
+| `master`, PR, release tag | `portable-brave-updater` |
 
-Dev-Artefakt:
+Dev artifact:
 
-- enthaelt `.7z`, `SHA256SUMS.txt`, `BUILD-INFO.txt`
-- Retention: 30 Tage
-- Berechtigungen: nur `contents: read`
-- kein Release, kein Tag, kein Repo-Write
-- wird nicht automatisch vom Updater geladen; nur manueller Download
+- contains `.7z`, `SHA256SUMS.txt`, `BUILD-INFO.txt`
+- retention: 30 days
+- permissions: `contents: read` only
+- no release, no tag, no repo write
+- not loaded automatically by the updater; manual download only
 
 Release:
 
-- Trigger nur Tag `v*`
-- prueft Tag, `Version.txt`, `AssemblyFileVersion` und Assetnamen
-- laedt `.7z` und `SHA256SUMS.txt` hoch
-- kein automatisches Commit von `Version.txt`
-- Der Tag muss auf `master` zeigen; der Updater liest `Version.txt` von `master`.
-- Release Notes werden aus `docs/RELEASE-NOTES-<Version>.md` gelesen, falls vorhanden.
-- Der Workflow erscheint in der Actions-Liste erst, wenn `release.yml` auf dem Default-Branch `master` liegt und/oder ein Tag `v*` gepusht wurde.
+- trigger only on tag `v*`
+- verifies tag, `Version.txt`, `AssemblyFileVersion` and asset name
+- uploads `.7z` and `SHA256SUMS.txt`
+- does not commit `Version.txt`
+- tag must point to `master`; the updater reads `Version.txt` from `master`
+- release notes are read from `docs/RELEASE-NOTES-<Version>.md` if present
+- the workflow appears in the Actions list once `release.yml` is on the default branch `master` and/or a `v*` tag is pushed
 
-Hinweis: `windows-latest` bringt VS 2022 und .NET Framework 4.8 in der Regel mit. Der Workflow prueft das explizit und bricht sonst mit einer klaren Meldung ab.
+Note: `windows-latest` normally includes VS 2022 and .NET Framework 4.8. The workflow verifies this and fails with a clear message otherwise.
 
-## 8. Typische Build-Fehler
+## 8. Common build errors
 
-| Fehler | Ursache | Loesung |
+| Error | Cause | Fix |
 |---|---|---|
-| `winget` nicht gefunden | App-Execution-Alias nicht im `PATH` der erhoehten Shell | vollstaendigen Pfad nutzen oder Visual Studio Installer oeffnen |
-| `MSB3644` | Targeting Pack fehlt | .NET Framework 4.8 Targeting Pack installieren |
-| `MSB3644` fuer v4.0 | Launcher noch auf 4.0 | auf 4.8 retargeten |
-| `tlbimp.exe` nicht gefunden | .NET Framework 4.8 SDK fehlt | Workload/.NET 4.8 SDK installieren |
-| COM-Referenzfehler | `IWshRuntimeLibrary` | TlbImp/.NET 4.8 SDK pruefen oder COM-Interop spaeter ersetzen |
-| NuGet-Restore-Fehler | alte Analyzer | `packages.config` bereinigen |
-| ResX-Fehler | Designer-Ressourcen | Projekt in VS 2022 neu laden, ResX regenerieren |
+| `winget` not found | App execution alias is not in the elevated shell's `PATH` | Use the full path or open the Visual Studio Installer |
+| `MSB3644` | Targeting Pack missing | Install the .NET Framework 4.8 Targeting Pack |
+| `MSB3644` for v4.0 | Launcher still targets 4.0 | Retarget to 4.8 |
+| `tlbimp.exe` not found | .NET Framework 4.8 SDK missing | Install the workload/.NET 4.8 SDK |
+| COM reference error | `IWshRuntimeLibrary` | Check TlbImp/.NET 4.8 SDK or replace COM interop later |
+| NuGet restore error | Old analyzers | Clean up `packages.config` |
+| ResX error | Designer resources | Reload the project in VS 2022 and regenerate ResX |
 
-## 9. Verifikation
+## 9. Verification
 
-Ist-Stand und exakte Ausgaben: `07-INSTALLATIONSPROTOKOLL.md`.
+Current state and exact output: `07-INSTALLATION-LOG.md`.
 
-Kurzpruefung:
+Quick check:
 
 ```powershell
 & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" `
@@ -294,33 +296,33 @@ Test-Path "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETF
 Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs\Windows" -Recurse -Filter TlbImp.exe
 ```
 
-Nach der CLI-Implementierung:
+After the CLI implementation:
 
 ```powershell
 .\bin\Release\Portable Brave Updater.exe --help
 ```
 
-Fuer den Baseline-Test zunaechst ohne CLI:
+For the baseline test without the CLI:
 
-1. `Bin/` aus dem Release bereitstellen.
-2. Updater starten.
-3. Eine Edition aktualisieren.
-4. `Brave <Edition>\updates\Version.log` pruefen.
-5. Sicherstellen, dass die Launcher-EXE kopiert wurde.
+1. Provide `Bin/` from the release.
+2. Start the updater.
+3. Update one edition.
+4. Check `Brave <Edition>\updates\Version.log`.
+5. Make sure the launcher EXE was copied.
 
-## 10. Build-Ergebnis 2026-11-02
+## 10. Build result 2026-11-02
 
-Hauptprojekt:
+Main project:
 
 ```text
 bin\Release\Portable Brave Updater.exe
 FileVersion: 1.3.3.7
-Groesse: 103424 Bytes
+Size: 103424 bytes
 ```
 
-Launcher: alle neun Projekte erfolgreich gebaut.
+Launchers: all nine projects built successfully.
 
-Fork-URLs:
+Fork URLs:
 
 ```text
 https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Version.txt          -> HTTP 200
@@ -328,11 +330,18 @@ https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher
 https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher/Launcher.7z -> HTTP 200
 ```
 
-Build-Artefakte werden ueber `.gitignore` von `bin/`/`obj/` ferngehalten.
+Local release package:
 
-## 11. Referenzen
+```text
+dist/Portable.Brave.Updater.v1.3.3.7.7z
+Checksum: see dist/SHA256SUMS.txt
+```
+
+Build artifacts are kept out of the repository by `.gitignore`.
+
+## 11. References
 
 - .NET Framework Support Policy: https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-framework
 - .NET Framework Developer Pack: https://learn.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
-- VS Build Tools Komponenten: https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools
+- VS Build Tools components: https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools
 - Microsoft.NETFramework.ReferenceAssemblies: https://learn.microsoft.com/en-us/dotnet/framework/migration-guide/reference-assemblies
