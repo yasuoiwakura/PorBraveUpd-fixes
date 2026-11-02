@@ -17,6 +17,42 @@ The planned feature is deliberately small:
 
 The goal is a clean, low-maintenance integration without adding another process that fights with taskbar or app-running detection.
 
+### 1.1 Prototype status (2026-11-02)
+
+A minimal metadata-only PAF wrapper was created in the live folder:
+
+```text
+P:\PA\PortableApps\BravePortable\App\AppInfo\
+```
+
+It contains:
+
+- `appinfo.ini`
+- `appicon.ico`, `appicon1.ico`, `appicon2.ico`
+- `appicon_16/32/75/128/256.png`
+- `appicon1_16/32/75/128/256.png`
+- `appicon2_16/32/75/128/256.png`
+
+The prototype exposes two Start entries:
+
+- `Brave (Launcher)` -> `Brave Launcher.exe`
+- `Brave (Update then Start)` -> `PortableAppsUpdate.bat`
+
+The first attempt used quoted `Start` values with arguments. The Platform treated the quotes as part of the path and did not parse the arguments, so the entries failed with "Could not find". The prototype was corrected to:
+
+- an unquoted launcher path for Start1
+- a no-space batch file for Start2, because `appinfo.ini` `Start` does not support command-line arguments reliably
+
+`PortableAppsUpdate.bat` calls:
+
+```bat
+"Portable Brave Updater.exe" --update=existing --launch-brave=stable:x64 --quit-after --log "%~dp0PortableAppsUpdate.log"
+```
+
+The batch itself was tested directly from the live folder: it detected the current Brave installation, launched `Brave Launcher.exe`, and exited with code 0. The Platform entry test is still pending.
+
+If the Platform also rejects the batch as a Start target, the fallback is a no-space EXE shim or the non-PAF `.pap.ini` route. If the direct unquoted `Brave Launcher.exe` Start still fails because of the space in the filename, the next fallback is a no-space `PortableAppsStart.bat` wrapper.
+
 ## 2. Current local state
 
 Inspection findings from `P:\PA\PortableApps\BravePortable`:
@@ -236,6 +272,8 @@ Rejected for now because:
 - The custom updater is required for Brave updates in this layout.
 - PAF would mainly be a one-time installation/menu helper for other users, not an update mechanism.
 - A wrapper executable is not worth the taskbar/process-tracking complexity.
+- `appinfo.ini` `Start` is treated as a file path by the Platform; quoted paths and arguments are not parsed reliably. Use no-space targets or a no-space batch/shim.
+- The official `.pap.ini` parameter mechanism is the reliable way to pass arguments to a non-PAF app, but it cannot select between two Start entries.
 
 ## 9. Open decisions
 

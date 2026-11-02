@@ -32,3 +32,4 @@ CLI release for the fork, based on the .NET 4.8 and fork-URL work from 1.3.3.7.
 - `Bin/Launcher/*.exe` (`1.3.3.7`)
 - `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.txt`
 - `update_and_close.bat`, `update_and_run_brave.bat`
+- `PortableAppsUpdate.bat`

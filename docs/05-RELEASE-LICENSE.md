@@ -135,6 +135,7 @@ Important:
 - [ ] `THIRD-PARTY-NOTICES.txt`
 - [ ] `update_and_close.bat`
 - [ ] `update_and_run_brave.bat`
+- [ ] `PortableAppsUpdate.bat`
 - [ ] Optional: `CHANGELOG.md`
 
 ### Publication

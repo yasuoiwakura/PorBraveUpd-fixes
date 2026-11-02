@@ -177,7 +177,7 @@ Already produced:
   - `Bin/7zr.exe` (19.00)
   - `Bin/Launcher/*.exe` (1.3.3.7)
   - `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.txt`
-  - `update_and_close.bat`, `update_and_run_brave.bat`
+  - `update_and_close.bat`, `update_and_run_brave.bat`, `PortableAppsUpdate.bat`
 - `dist/SHA256SUMS.txt`
 - `Launcher/Launcher.7z` (9 launchers, 1.3.3.7)
 

@@ -67,5 +67,5 @@ Planned core features:
 - CLI implementation: done (MVP)
 - CLI smoke tests: `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave` (2026-11-02)
 - Batch test scripts included in the package: `update_and_close.bat`, `update_and_run_brave.bat`
-- PortableApps.com integration: planned, see `docs/08-PORTABLEAPPS-INTEGRATION.md`
+- PortableApps.com integration: prototype `appinfo.ini` created, Platform test pending; see `docs/08-PORTABLEAPPS-INTEGRATION.md`
 - Baseline smoke test with a real update: open
