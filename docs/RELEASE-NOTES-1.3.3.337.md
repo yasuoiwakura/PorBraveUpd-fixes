@@ -8,6 +8,10 @@ PortableApps integration and runtime-dependency release. Builds on the released 
 - Existing `App\AppInfo`, generated batches and settings are backed up before writing.
 - Launcher entries use the Brave icon; the update entry uses the updater icon.
 - ICO files contain multi-resolution 32-bit frames (16-256 px) from the high-resolution EXE icons, fixing pixelated and low-color-depth menu icons.
+- New PortableApps menu entry `Portable Brave Updater`, plus `Brave` and `Brave (updated)` for the selected build. The icon dropdown sits next to `Brave (updated)`.
+- The update entry icon is selectable: `Updater icon` or `Brave icon`; the choice is stored as `UpdateIcon` in `PortableBraveUpdater.ini`.
+- Menu icons follow the selected entries: `appicon` for the main entry and `appicon1..N` for `Start1..N`.
+- The PortableApps dialog text was shortened; the experimental/tracking note is now a compact warning.
 - Generated batches avoid spaces and arguments in `appinfo.ini` `Start` values.
 - The static `PortableAppsUpdate.bat` was removed. The app generates `PortableAppsStart-stable-x64.bat` and `PortableAppsUpdate-stable-x64.bat`.
 - Transparent runtime dependency preflight for GUI and CLI. Missing files are reported by exact path before download or extraction.

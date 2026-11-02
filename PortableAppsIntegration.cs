@@ -12,9 +12,11 @@ namespace Brave_Updater
 {
     internal sealed class PortableAppsSettings
     {
+        public bool IncludeUpdaterApp = false;
         public bool IncludeLauncher = true;
         public bool IncludeUpdater = false;
         public string Edition = "stable:x64";
+        public string UpdateIcon = "updater";
         public bool SuppressTrackingWarning = false;
 
         public static PortableAppsSettings Load(string appPath)
@@ -56,6 +58,9 @@ namespace Brave_Updater
                 string value = line.Substring(equals + 1).Trim();
                 switch (key.ToLowerInvariant())
                 {
+                    case "includeupdaterapp":
+                        settings.IncludeUpdaterApp = ParseBool(value, settings.IncludeUpdaterApp);
+                        break;
                     case "includelauncher":
                         settings.IncludeLauncher = ParseBool(value, settings.IncludeLauncher);
                         break;
@@ -67,6 +72,9 @@ namespace Brave_Updater
                         {
                             settings.Edition = value;
                         }
+                        break;
+                    case "updateicon":
+                        settings.UpdateIcon = NormalizeUpdateIcon(value);
                         break;
                     case "suppresstrackingwarning":
                         settings.SuppressTrackingWarning = ParseBool(value, settings.SuppressTrackingWarning);
@@ -82,9 +90,11 @@ namespace Brave_Updater
             string file = Path.Combine(appPath, "PortableBraveUpdater.ini");
             var builder = new StringBuilder();
             builder.AppendLine("[PortableApps]");
+            builder.AppendLine("IncludeUpdaterApp=" + (IncludeUpdaterApp ? "true" : "false"));
             builder.AppendLine("IncludeLauncher=" + (IncludeLauncher ? "true" : "false"));
             builder.AppendLine("IncludeUpdater=" + (IncludeUpdater ? "true" : "false"));
             builder.AppendLine("Edition=" + Edition);
+            builder.AppendLine("UpdateIcon=" + NormalizeUpdateIcon(UpdateIcon));
             builder.AppendLine("SuppressTrackingWarning=" + (SuppressTrackingWarning ? "true" : "false"));
             File.WriteAllText(file, builder.ToString(), Encoding.ASCII);
         }
@@ -93,6 +103,11 @@ namespace Brave_Updater
         {
             bool parsed;
             return bool.TryParse(value, out parsed) ? parsed : fallback;
+        }
+
+        private static string NormalizeUpdateIcon(string value)
+        {
+            return string.Equals(value, "brave", StringComparison.OrdinalIgnoreCase) ? "brave" : "updater";
         }
     }
 
@@ -108,7 +123,7 @@ namespace Brave_Updater
                 throw new ArgumentNullException("settings");
             }
 
-            if (!settings.IncludeLauncher && !settings.IncludeUpdater)
+            if (!settings.IncludeUpdaterApp && !settings.IncludeLauncher && !settings.IncludeUpdater)
             {
                 throw new InvalidOperationException("Select at least one PortableApps entry.");
             }
@@ -134,8 +149,15 @@ namespace Brave_Updater
             Directory.CreateDirectory(appInfoDir);
 
             var generated = new List<string>();
+            string updaterBatch = Path.Combine(appPath, "PortableAppsUpdater-stable-x64.bat");
             string startBatch = Path.Combine(appPath, "PortableAppsStart-stable-x64.bat");
             string updateBatch = Path.Combine(appPath, "PortableAppsUpdate-stable-x64.bat");
+
+            if (settings.IncludeUpdaterApp)
+            {
+                WriteBatch(updaterBatch, "\"Portable Brave Updater.exe\" %*");
+                generated.Add(updaterBatch);
+            }
 
             if (settings.IncludeLauncher)
             {
@@ -150,15 +172,15 @@ namespace Brave_Updater
             }
 
             string appInfoPath = Path.Combine(appInfoDir, "appinfo.ini");
-            File.WriteAllText(appInfoPath, BuildAppInfo(appPath, settings, settings.IncludeLauncher, settings.IncludeUpdater), Encoding.ASCII);
+            File.WriteAllText(appInfoPath, BuildAppInfo(appPath, settings), Encoding.ASCII);
             generated.Add(appInfoPath);
 
-            GenerateIcons(appPath, appInfoDir, settings.IncludeLauncher, settings.IncludeUpdater);
+            GenerateIcons(appPath, appInfoDir, settings);
+            int iconCount = GetIconCount(settings);
             generated.Add(Path.Combine(appInfoDir, "appicon.ico"));
-            generated.Add(Path.Combine(appInfoDir, "appicon1.ico"));
-            if (settings.IncludeLauncher && settings.IncludeUpdater)
+            for (int i = 1; i <= iconCount; i++)
             {
-                generated.Add(Path.Combine(appInfoDir, "appicon2.ico"));
+                generated.Add(Path.Combine(appInfoDir, "appicon" + i + ".ico"));
             }
 
             settings.Save(appPath);
@@ -197,16 +219,12 @@ namespace Brave_Updater
             return null;
         }
 
-        private static string BuildAppInfo(string appPath, PortableAppsSettings settings, bool includeLauncher, bool includeUpdater)
+        private static string BuildAppInfo(string appPath, PortableAppsSettings settings)
         {
-            var entries = new List<Entry>();
-            if (includeLauncher)
+            var entries = BuildEntries(settings);
+            if (entries.Count == 0)
             {
-                entries.Add(new Entry("PortableAppsStart-stable-x64.bat", "Brave (Launcher)"));
-            }
-            if (includeUpdater)
-            {
-                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (Update then Start)"));
+                throw new InvalidOperationException("Select at least one PortableApps entry.");
             }
 
             string version = FileVersionInfo.GetVersionInfo(Path.Combine(appPath, "Portable Brave Updater.exe")).FileVersion;
@@ -243,9 +261,15 @@ namespace Brave_Updater
             builder.AppendLine("PackageVersion=" + version);
             builder.AppendLine("DisplayVersion=" + version);
             builder.AppendLine();
+            string mainStart = settings.IncludeLauncher
+                ? "PortableAppsStart-stable-x64.bat"
+                : (settings.IncludeUpdaterApp
+                    ? "PortableAppsUpdater-stable-x64.bat"
+                    : "PortableAppsUpdate-stable-x64.bat");
+
             builder.AppendLine("[Control]");
             builder.AppendLine("Icons=" + entries.Count);
-            builder.AppendLine("Start=" + entries[0].Start);
+            builder.AppendLine("Start=" + mainStart);
             for (int i = 0; i < entries.Count; i++)
             {
                 builder.AppendLine("Start" + (i + 1) + "=" + entries[i].Start);
@@ -253,6 +277,44 @@ namespace Brave_Updater
             }
 
             return builder.ToString();
+        }
+
+        private static List<Entry> BuildEntries(PortableAppsSettings settings)
+        {
+            var entries = new List<Entry>();
+            if (settings.IncludeUpdaterApp)
+            {
+                entries.Add(new Entry("PortableAppsUpdater-stable-x64.bat", "Portable Brave Updater", "updater"));
+            }
+            if (settings.IncludeLauncher)
+            {
+                entries.Add(new Entry("PortableAppsStart-stable-x64.bat", "Brave", "brave"));
+            }
+            if (settings.IncludeUpdater)
+            {
+                entries.Add(new Entry("PortableAppsUpdate-stable-x64.bat", "Brave (updated)", "selected"));
+            }
+
+            return entries;
+        }
+
+        private static int GetIconCount(PortableAppsSettings settings)
+        {
+            int count = 0;
+            if (settings.IncludeUpdaterApp)
+            {
+                count++;
+            }
+            if (settings.IncludeLauncher)
+            {
+                count++;
+            }
+            if (settings.IncludeUpdater)
+            {
+                count++;
+            }
+
+            return count;
         }
 
         private static string NormalizeVersion(string version)
@@ -278,20 +340,50 @@ namespace Brave_Updater
             File.WriteAllText(path, builder.ToString(), Encoding.ASCII);
         }
 
-        private static void GenerateIcons(string appPath, string appInfoDir, bool includeLauncher, bool includeUpdater)
+        private static void GenerateIcons(string appPath, string appInfoDir, PortableAppsSettings settings)
         {
             string updaterExe = Path.Combine(appPath, "Portable Brave Updater.exe");
             using (var brave = LoadBraveSource(appPath, updaterExe))
             using (var updater = LoadUpdaterSource(updaterExe))
             {
-                IconSource first = includeLauncher ? brave : updater;
-                IconSource second = includeLauncher && includeUpdater ? updater : null;
+                IconSource updateEntry = string.Equals(settings.UpdateIcon, "brave", StringComparison.OrdinalIgnoreCase)
+                    ? brave
+                    : updater;
+                IconSource mainIcon = settings.IncludeLauncher
+                    ? brave
+                    : (settings.IncludeUpdaterApp ? updater : updateEntry);
 
-                WriteIconSet(appInfoDir, "appicon", first);
-                WriteIconSet(appInfoDir, "appicon1", first);
-                if (second != null)
+                WriteIconSet(appInfoDir, "appicon", mainIcon);
+                List<Entry> entries = BuildEntries(settings);
+                for (int i = 0; i < entries.Count; i++)
                 {
-                    WriteIconSet(appInfoDir, "appicon2", second);
+                    IconSource icon = entries[i].Icon == "updater"
+                        ? updater
+                        : (entries[i].Icon == "brave" ? brave : updateEntry);
+                    WriteIconSet(appInfoDir, "appicon" + (i + 1), icon);
+                }
+
+                for (int i = entries.Count + 1; i <= 3; i++)
+                {
+                    RemoveIconSet(appInfoDir, "appicon" + i);
+                }
+            }
+        }
+
+        private static void RemoveIconSet(string appInfoDir, string baseName)
+        {
+            string icon = Path.Combine(appInfoDir, baseName + ".ico");
+            if (File.Exists(icon))
+            {
+                File.Delete(icon);
+            }
+
+            foreach (int size in IconSizes)
+            {
+                string png = Path.Combine(appInfoDir, baseName + "_" + size + ".png");
+                if (File.Exists(png))
+                {
+                    File.Delete(png);
                 }
             }
         }
@@ -572,7 +664,7 @@ namespace Brave_Updater
                 items.Add(appInfoDir);
             }
 
-            foreach (string name in new string[] { "PortableAppsStart-stable-x64.bat", "PortableAppsUpdate-stable-x64.bat", "PortableBraveUpdater.ini" })
+            foreach (string name in new string[] { "PortableAppsUpdater-stable-x64.bat", "PortableAppsStart-stable-x64.bat", "PortableAppsUpdate-stable-x64.bat", "PortableBraveUpdater.ini" })
             {
                 string path = Path.Combine(appPath, name);
                 if (File.Exists(path))
@@ -621,11 +713,13 @@ namespace Brave_Updater
         {
             public readonly string Start;
             public readonly string Name;
+            public readonly string Icon;
 
-            public Entry(string start, string name)
+            public Entry(string start, string name, string icon)
             {
                 Start = start;
                 Name = name;
+                Icon = icon;
             }
         }
 

@@ -29,14 +29,26 @@ The updater GUI now has a **PortableApps...** button. It opens a small settings 
 
 The generator backs up existing `App\AppInfo`, generated batches and the settings file before overwriting. Icons are generated from the high-resolution icons embedded in `Brave\Brave.exe` and the updater EXE, with the Brave logo as fallback. The ICO files contain 16, 24, 32, 48, 64, 128 and 256 pixel frames at 32-bit color; the PNG sidecars are 32-bit. No raster files need to be shipped in the package.
 
-The generated `appinfo.ini` uses:
+The dialog exposes three menu entries:
 
-- `Start1=PortableAppsStart-stable-x64.bat` -> `Brave (Launcher)`
-- `Start2=PortableAppsUpdate-stable-x64.bat` -> `Brave (Update then Start)`
+- `Portable Brave Updater` -> `PortableAppsUpdater-stable-x64.bat` -> `Start1`, `Name1`
+- `Brave` -> `PortableAppsStart-stable-x64.bat` -> `Start2`, `Name2`
+- `Brave (updated)` -> `PortableAppsUpdate-stable-x64.bat` -> `Start3`, `Name3`
+
+`Start` is the main app entry. When the Brave entry is selected, `Start` uses the Brave launcher; otherwise the first selected entry is used. `Icons` equals the number of selected menu entries, and `appicon1..N` correspond to `Start1..N`.
+
+With all three selected, `appicon` is Brave for the main entry, `appicon1` is the updater icon, `appicon2` is Brave, and `appicon3` is the selected update icon.
+
+The update entry icon is selectable in the dialog:
+
+- `Updater icon`
+- `Brave icon`
+
+The choice is stored as `UpdateIcon=updater|brave` in `PortableBraveUpdater.ini`.
 
 Background: `appinfo.ini` `Start` is treated as a file path by the Platform. It does not parse quoted paths or arguments, so the generated no-space batches are required.
 
-Live deployment on 2026-11-02 uses updater `1.3.3.337`. The generated `appinfo.ini` has `PackageVersion=1.3.3.337` and `DisplayVersion=1.3.3.337`. The ICO files were regenerated with 16, 24, 32, 48, 64, 128 and 256 pixel 32-bit frames. Backup before final icon regeneration: `PortableApps-backup-20261102-211028-509`; previous EXE backup: `Portable Brave Updater.exe.bak-20261102-211022`.
+Live deployment on 2026-11-02 uses updater `1.3.3.337`. The generated `appinfo.ini` has `PackageVersion=1.3.3.337` and `DisplayVersion=1.3.3.337`. The ICO files were regenerated with 16, 24, 32, 48, 64, 128 and 256 pixel 32-bit frames. Backup before final layout/icon regeneration: `PortableApps-backup-20261102-212800-196`; previous EXE backup: `Portable Brave Updater.exe.bak-20261102-212759`. Current live settings: `IncludeUpdaterApp=true`, `IncludeLauncher=true`, `IncludeUpdater=true`, `UpdateIcon=updater`.
 
 ### 1.2 Earlier manual prototype
 
