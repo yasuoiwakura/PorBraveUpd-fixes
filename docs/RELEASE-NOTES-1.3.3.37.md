@@ -11,7 +11,6 @@ CLI release for the fork, based on the .NET 4.8 and fork-URL work from 1.3.3.7.
 - `--launch-brave` starts the matching launcher and falls back to `Brave.exe` if needed.
 - `--wait-for-brave` and `--timeout` support unattended update jobs.
 - Batch test scripts `update_and_close.bat` and `update_and_run_brave.bat` are included in the package.
-- PortableApps integration dialog generates appinfo.ini, icons and no-space start/update batches with backup.
 
 ## Validation
 
