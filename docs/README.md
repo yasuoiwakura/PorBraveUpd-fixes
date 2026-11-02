@@ -42,6 +42,7 @@ Geplante Kernfunktionen:
 | `04-TESTPLAN.md` | Testmatrix, Testfaelle, Abnahmekriterien |
 | `05-RELEASE-LIZENZ.md` | MIT, Marken, 7-Zip, Release-Checkliste |
 | `06-BEST-PRACTICES.md` | CLI-, Build-, Security- und Testing-Best-Practices |
+| `07-INSTALLATIONSPROTOKOLL.md` | Ist-Stand und exakte Befehle der Build-Umgebung |
 | `adr/0001-csharp-behalten.md` | ADR: keine Neuimplementierung |
 | `adr/0002-zielsystem-net48.md` | ADR: .NET Framework 4.8 statt 4.0/4.7 |
 | `adr/0003-cli-konventionen.md` | ADR: Long-Options und Semantik |
@@ -50,5 +51,7 @@ Geplante Kernfunktionen:
 
 - Analyse: erledigt
 - Dokumentation: erledigt
+- Build-Umgebung: eingerichtet (2026-11-02)
+- Retargeting auf .NET Framework 4.8: offen
 - Implementierung: nicht begonnen
 - Baseline-Build und Smoke-Test: offen

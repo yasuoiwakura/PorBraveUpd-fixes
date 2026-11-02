@@ -11,6 +11,21 @@ Stand: 2026-11-02
 
 Begruendung: .NET Framework 4.8 ist aktiv unterstuetzt und auf Windows 11 vorinstalliert. .NET Framework 4.0 ist seit 2016 out of support und mit VS 2022 nicht mehr ohne Workaround baubar.
 
+### Aktueller Installationsstand (2026-11-02)
+
+Die Build-Umgebung ist eingerichtet. Details und exakte Befehle stehen in `07-INSTALLATIONSPROTOKOLL.md`.
+
+| Merkmal | Wert |
+|---|---|
+| Build Tools | Visual Studio Build Tools 2022, 17.14.25 |
+| InstallationPath | `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools` |
+| MSBuild | `17.14.40.60911` |
+| Workload | .NET Desktop Build Tools |
+| .NET Framework 4.8 SDK | installiert |
+| .NET Framework 4.8 Targeting Pack | installiert |
+| Windows 11 SDK | 26100 installiert |
+| TlbImp | `C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\TlbImp.exe` |
+
 ## 2. Was installiert werden muss
 
 ### Pflicht
@@ -48,14 +63,40 @@ Begruendung: .NET Framework 4.8 ist aktiv unterstuetzt und auf Windows 11 vorins
    winget install Microsoft.VisualStudio.2022.BuildTools
    ```
 
+   Hinweis: Wenn `winget` in der erhoehten PowerShell nicht im `PATH` liegt, den vollstaendigen Pfad verwenden:
+
+   ```powershell
+   & "$env:LOCALAPPDATA\Microsoft\WindowsApps\winget.exe" install Microsoft.VisualStudio.2022.BuildTools
+   ```
+
+   Oder den Visual Studio Installer direkt oeffnen.
+
 2. Visual Studio Installer oeffnen, "Aendern" waehlen.
 3. Workload **".NET Desktop Build Tools"** aktivieren.
 4. Unter "Einzelne Komponenten" sicherstellen:
    - `.NET Framework 4.8 targeting pack`
+   - `.NET Framework 4.8 SDK`
    - `Windows 11 SDK` (oder die aktuell angebotene Windows-SDK-Version)
    - `NuGet targets and build tasks`
    - `C# and Visual Basic Roslyn compilers`
 5. Installation abschliessen.
+
+### Variante A2: Bestehende Build Tools per CLI modifizieren
+
+Wenn die Build Tools bereits installiert sind, keine Neuinstallation ausfuehren, sondern die Instanz modifizieren:
+
+```powershell
+$installer = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
+$installPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools"
+
+& $installer modify `
+  --installPath $installPath `
+  --add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools `
+  --add Microsoft.Net.Component.4.8.TargetingPack `
+  --passive --norestart
+```
+
+Bewusst ohne `--includeRecommended`, damit nicht unnoetig .NET 8/9 SDK installiert wird. Die Workload bringt .NET 4.8 SDK, MSBuild, Roslyn und NuGet mit.
 
 ### Variante B: Community (mit IDE)
 
@@ -187,14 +228,30 @@ Hinweis: Wenn der Runner das .NET Framework 4.8 Targeting Pack nicht enthaelt, m
 
 | Fehler | Ursache | Loesung |
 |---|---|---|
+| `winget` nicht gefunden | App-Execution-Alias nicht im `PATH` der erhoehten Shell | vollstaendigen Pfad nutzen oder Visual Studio Installer oeffnen |
 | `MSB3644` | Targeting Pack fehlt | .NET Framework 4.8 Targeting Pack installieren |
 | `MSB3644` fuer v4.0 | Launcher noch auf 4.0 | auf 4.8 retargeten |
-| `tlbimp.exe` nicht gefunden | Windows SDK fehlt | Windows-SDK-Komponente installieren |
-| COM-Referenzfehler | `IWshRuntimeLibrary` | Windows SDK installieren oder COM-Interop spaeter ersetzen |
+| `tlbimp.exe` nicht gefunden | .NET Framework 4.8 SDK fehlt | Workload/.NET 4.8 SDK installieren |
+| COM-Referenzfehler | `IWshRuntimeLibrary` | TlbImp/.NET 4.8 SDK pruefen oder COM-Interop spaeter ersetzen |
 | NuGet-Restore-Fehler | alte Analyzer | `packages.config` bereinigen |
 | ResX-Fehler | Designer-Ressourcen | Projekt in VS 2022 neu laden, ResX regenerieren |
 
 ## 9. Verifikation
+
+Ist-Stand und exakte Ausgaben: `07-INSTALLATIONSPROTOKOLL.md`.
+
+Kurzpruefung:
+
+```powershell
+& "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" `
+  -latest -products * `
+  -requires Microsoft.Net.Component.4.8.TargetingPack `
+  -property installationPath
+
+Test-Path "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8"
+
+Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs\Windows" -Recurse -Filter TlbImp.exe
+```
 
 Nach dem Build:
 
