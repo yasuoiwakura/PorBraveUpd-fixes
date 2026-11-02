@@ -17,6 +17,7 @@ PortableApps integration and runtime-dependency release.
 - Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
 - The static `PortableAppsUpdate.bat` was removed. The app now generates `PortableAppsUpdate-stable-x64.bat` and `PortableAppsStart-stable-x64.bat`.
 - PortableApps icons use the Brave icon for the launcher entries and the updater icon for the update entry.
+- PortableApps ICO files now contain multi-resolution 32-bit frames (16-256 px) extracted from the high-resolution EXE icons, fixing pixelated and low-color-depth menu icons.
 
 ### Validation
 

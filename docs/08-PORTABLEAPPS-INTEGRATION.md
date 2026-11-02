@@ -27,7 +27,7 @@ The updater GUI now has a **PortableApps...** button. It opens a small settings 
 - `PortableAppsUpdate-stable-x64.bat`
 - `PortableBraveUpdater.ini`
 
-The generator backs up existing `App\AppInfo`, generated batches and the settings file before overwriting. Icons are generated from the installed Brave icon and the updater icon. No raster files need to be shipped in the package.
+The generator backs up existing `App\AppInfo`, generated batches and the settings file before overwriting. Icons are generated from the high-resolution icons embedded in `Brave\Brave.exe` and the updater EXE, with the Brave logo as fallback. The ICO files contain 16, 24, 32, 48, 64, 128 and 256 pixel frames at 32-bit color; the PNG sidecars are 32-bit. No raster files need to be shipped in the package.
 
 The generated `appinfo.ini` uses:
 
@@ -36,7 +36,7 @@ The generated `appinfo.ini` uses:
 
 Background: `appinfo.ini` `Start` is treated as a file path by the Platform. It does not parse quoted paths or arguments, so the generated no-space batches are required.
 
-Live deployment on 2026-11-02 uses updater `1.3.3.337`. The generated `appinfo.ini` has `PackageVersion=1.3.3.337` and `DisplayVersion=1.3.3.337`. Backup before deployment: `PortableApps-backup-20261102-203535-975`; previous EXE backup: `Portable Brave Updater.exe.bak-20261102-203535`.
+Live deployment on 2026-11-02 uses updater `1.3.3.337`. The generated `appinfo.ini` has `PackageVersion=1.3.3.337` and `DisplayVersion=1.3.3.337`. The ICO files were regenerated with 16, 24, 32, 48, 64, 128 and 256 pixel 32-bit frames. Backup before final icon regeneration: `PortableApps-backup-20261102-211028-509`; previous EXE backup: `Portable Brave Updater.exe.bak-20261102-211022`.
 
 ### 1.2 Earlier manual prototype
 

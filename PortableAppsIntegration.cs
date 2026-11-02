@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Brave_Updater
@@ -98,6 +99,7 @@ namespace Brave_Updater
     internal static class PortableAppsIntegration
     {
         private static readonly int[] IconSizes = new int[] { 16, 32, 75, 128, 256 };
+        private static readonly int[] IcoSizes = new int[] { 16, 24, 32, 48, 64, 128, 256 };
 
         public static void Write(string appPath, PortableAppsSettings settings, out string report)
         {
@@ -296,78 +298,270 @@ namespace Brave_Updater
 
         private static IconSource LoadBraveSource(string appPath, string updaterExe)
         {
-            Icon icon = null;
-            Image image = null;
-
             string braveExe = Path.Combine(appPath, "Brave", "Brave.exe");
+            if (!File.Exists(braveExe))
+            {
+                braveExe = Path.Combine(appPath, "App", "Brave", "Brave.exe");
+            }
+
             if (File.Exists(braveExe))
             {
-                icon = Icon.ExtractAssociatedIcon(braveExe);
-            }
-
-            string logo = Path.Combine(appPath, "SmallLogo.png");
-            if (File.Exists(logo))
-            {
-                image = Image.FromFile(logo);
-            }
-
-            if (image == null && icon != null)
-            {
-                image = icon.ToBitmap();
-            }
-
-            if (icon == null)
-            {
-                icon = Icon.ExtractAssociatedIcon(updaterExe);
-            }
-
-            if (icon == null || image == null)
-            {
-                if (icon != null)
+                Bitmap highResolution = ExtractIconBitmap(braveExe, 256);
+                if (highResolution != null)
                 {
-                    icon.Dispose();
+                    return new IconSource(braveExe, highResolution);
                 }
-                if (image != null)
-                {
-                    image.Dispose();
-                }
-                throw new InvalidOperationException("Could not load a Brave icon.");
             }
 
-            return new IconSource(icon, image);
+            string logo = FindBraveLogo(appPath);
+            if (!string.IsNullOrEmpty(logo))
+            {
+                return new IconSource(null, Image.FromFile(logo));
+            }
+
+            Bitmap fallback = ExtractIconBitmap(updaterExe, 256);
+            if (fallback != null)
+            {
+                return new IconSource(null, fallback);
+            }
+
+            throw new InvalidOperationException("Could not load a Brave icon.");
+        }
+
+        private static string FindBraveLogo(string appPath)
+        {
+            string[] directCandidates = new string[]
+            {
+                Path.Combine(appPath, "SmallLogo.png"),
+                Path.Combine(appPath, "Brave", "VisualElements", "Logo.png"),
+                Path.Combine(appPath, "Brave", "VisualElements", "SmallLogo.png")
+            };
+            foreach (string candidate in directCandidates)
+            {
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            string braveRoot = Path.Combine(appPath, "Brave");
+            if (Directory.Exists(braveRoot))
+            {
+                foreach (string directory in Directory.GetDirectories(braveRoot))
+                {
+                    string large = Path.Combine(directory, "VisualElements", "Logo.png");
+                    if (File.Exists(large))
+                    {
+                        return large;
+                    }
+
+                    string small = Path.Combine(directory, "VisualElements", "SmallLogo.png");
+                    if (File.Exists(small))
+                    {
+                        return small;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private static IconSource LoadUpdaterSource(string updaterExe)
         {
+            Bitmap highResolution = ExtractIconBitmap(updaterExe, 256);
+            if (highResolution != null)
+            {
+                return new IconSource(updaterExe, highResolution);
+            }
+
             Icon icon = Icon.ExtractAssociatedIcon(updaterExe);
             if (icon == null)
             {
                 throw new InvalidOperationException("Could not load the updater icon.");
             }
 
-            return new IconSource(icon, icon.ToBitmap());
+            using (icon)
+            {
+                return new IconSource(null, icon.ToBitmap());
+            }
         }
 
         private static void WriteIconSet(string appInfoDir, string baseName, IconSource source)
         {
-            using (var stream = File.Create(Path.Combine(appInfoDir, baseName + ".ico")))
-            {
-                source.Icon.Save(stream);
-            }
+            WriteIcon(Path.Combine(appInfoDir, baseName + ".ico"), source);
 
             foreach (int size in IconSizes)
             {
-                using (var bitmap = new Bitmap(size, size))
-                using (var graphics = Graphics.FromImage(bitmap))
+                using (var bitmap = source.GetFrame(size))
                 {
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.SmoothingMode = SmoothingMode.HighQuality;
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graphics.DrawImage(source.Image, 0, 0, size, size);
                     bitmap.Save(Path.Combine(appInfoDir, baseName + "_" + size + ".png"), ImageFormat.Png);
                 }
             }
         }
+
+        private static void WriteIcon(string path, IconSource source)
+        {
+            var frames = new List<IcoFrame>();
+            foreach (int size in IcoSizes)
+            {
+                using (var bitmap = source.GetFrame(size))
+                {
+                    frames.Add(new IcoFrame(size, size == 256 ? EncodePng(bitmap) : EncodeDib(bitmap)));
+                }
+            }
+
+            using (var stream = File.Create(path))
+            using (var writer = new BinaryWriter(stream))
+            {
+                writer.Write((ushort)0);
+                writer.Write((ushort)1);
+                writer.Write((ushort)frames.Count);
+
+                int offset = 6 + (16 * frames.Count);
+                foreach (IcoFrame frame in frames)
+                {
+                    writer.Write((byte)(frame.Size >= 256 ? 0 : frame.Size));
+                    writer.Write((byte)(frame.Size >= 256 ? 0 : frame.Size));
+                    writer.Write((byte)0);
+                    writer.Write((byte)0);
+                    writer.Write((ushort)1);
+                    writer.Write((ushort)32);
+                    writer.Write((uint)frame.Data.Length);
+                    writer.Write((uint)offset);
+                    offset += frame.Data.Length;
+                }
+
+                foreach (IcoFrame frame in frames)
+                {
+                    writer.Write(frame.Data);
+                }
+            }
+        }
+
+        private static byte[] EncodePng(Bitmap bitmap)
+        {
+            using (var stream = new MemoryStream())
+            {
+                bitmap.Save(stream, ImageFormat.Png);
+                return stream.ToArray();
+            }
+        }
+
+        private static byte[] EncodeDib(Bitmap bitmap)
+        {
+            int width = bitmap.Width;
+            int height = bitmap.Height;
+            int xorSize = width * height * 4;
+            int maskStride = ((width + 31) / 32) * 4;
+
+            using (var stream = new MemoryStream())
+            using (var writer = new BinaryWriter(stream))
+            {
+                writer.Write((uint)40);
+                writer.Write(width);
+                writer.Write(height * 2);
+                writer.Write((ushort)1);
+                writer.Write((ushort)32);
+                writer.Write((uint)0);
+                writer.Write((uint)xorSize);
+                writer.Write(0);
+                writer.Write(0);
+                writer.Write(0);
+                writer.Write(0);
+
+                BitmapData data = bitmap.LockBits(
+                    new Rectangle(0, 0, width, height),
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb);
+                try
+                {
+                    byte[] row = new byte[width * 4];
+                    for (int y = height - 1; y >= 0; y--)
+                    {
+                        Marshal.Copy(IntPtr.Add(data.Scan0, y * data.Stride), row, 0, row.Length);
+                        writer.Write(row);
+                    }
+                }
+                finally
+                {
+                    bitmap.UnlockBits(data);
+                }
+
+                byte[] mask = new byte[maskStride];
+                for (int y = 0; y < height; y++)
+                {
+                    writer.Write(mask);
+                }
+
+                return stream.ToArray();
+            }
+        }
+
+        private static Bitmap ResizeImage(Image source, int size)
+        {
+            var bitmap = new Bitmap(size, size, PixelFormat.Format32bppArgb);
+            bitmap.SetResolution(96, 96);
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.Clear(Color.Transparent);
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                using (var attributes = new ImageAttributes())
+                {
+                    attributes.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(
+                        source,
+                        new Rectangle(0, 0, size, size),
+                        0,
+                        0,
+                        source.Width,
+                        source.Height,
+                        GraphicsUnit.Pixel,
+                        attributes);
+                }
+            }
+
+            return bitmap;
+        }
+
+        private static Bitmap ExtractIconBitmap(string executable, int size)
+        {
+            var handles = new IntPtr[1];
+            var ids = new uint[1];
+            uint count = PrivateExtractIcons(executable, 0, size, size, handles, ids, 1, 0);
+            if (count == 0 || handles[0] == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            try
+            {
+                using (Icon icon = Icon.FromHandle(handles[0]))
+                {
+                    return icon.ToBitmap();
+                }
+            }
+            finally
+            {
+                DestroyIcon(handles[0]);
+            }
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern uint PrivateExtractIcons(
+            string file,
+            int iconIndex,
+            int cx,
+            int cy,
+            IntPtr[] handles,
+            uint[] ids,
+            uint count,
+            uint flags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool DestroyIcon(IntPtr handle);
 
         private static string BackupExisting(string appPath)
         {
@@ -437,13 +631,35 @@ namespace Brave_Updater
 
         private sealed class IconSource : IDisposable
         {
-            public readonly Icon Icon;
+            public readonly string Executable;
             public readonly Image Image;
 
-            public IconSource(Icon icon, Image image)
+            public IconSource(string executable, Image image)
             {
-                Icon = icon;
+                Executable = executable;
                 Image = image;
+            }
+
+            public Bitmap GetFrame(int size)
+            {
+                if (!string.IsNullOrEmpty(Executable))
+                {
+                    Bitmap extracted = ExtractIconBitmap(Executable, size);
+                    if (extracted != null)
+                    {
+                        if (extracted.Width == size && extracted.Height == size)
+                        {
+                            return extracted;
+                        }
+
+                        using (extracted)
+                        {
+                            return ResizeImage(extracted, size);
+                        }
+                    }
+                }
+
+                return ResizeImage(Image, size);
             }
 
             public void Dispose()
@@ -452,10 +668,18 @@ namespace Brave_Updater
                 {
                     Image.Dispose();
                 }
-                if (Icon != null)
-                {
-                    Icon.Dispose();
-                }
+            }
+        }
+
+        private sealed class IcoFrame
+        {
+            public readonly int Size;
+            public readonly byte[] Data;
+
+            public IcoFrame(int size, byte[] data)
+            {
+                Size = size;
+                Data = data;
             }
         }
     }
