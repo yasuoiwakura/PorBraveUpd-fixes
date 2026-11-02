@@ -1,0 +1,55 @@
+name: dev-latest
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dev-latest
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  publish:
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: portable-brave-updater
+          path: dist
+
+      - name: Prepare dev-latest asset
+        shell: pwsh
+        run: |
+          $archive = Get-ChildItem -LiteralPath "dist" -Filter "Portable.Brave.Updater.v*.7z" | Select-Object -First 1
+          if (-not $archive) { throw "Release-Archiv nicht gefunden" }
+          Copy-Item -LiteralPath $archive.FullName -Destination "dist/Portable.Brave.Updater.dev-latest.7z" -Force
+          $hash = (Get-FileHash -LiteralPath "dist/Portable.Brave.Updater.dev-latest.7z" -Algorithm SHA256).Hash
+          "$hash  Portable.Brave.Updater.dev-latest.7z" | Set-Content -LiteralPath "dist/SHA256SUMS-dev-latest.txt" -Encoding ASCII
+
+      - name: Publish dev-latest pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "dev-latest"
+          $title = "Development build"
+          $notes = "Automatischer Dev-Build von ${{ github.sha }}. Nicht fuer den Self-Update-Kanal gedacht."
+          gh release delete $tag --yes --cleanup-tag 2>$null
+          gh release create $tag --prerelease --title $title --notes $notes --target ${{ github.sha }}
+          if ($LASTEXITCODE -ne 0) { throw "Release konnte nicht erstellt werden" }
+          gh release upload $tag "dist/Portable.Brave.Updater.dev-latest.7z" --clobber
+          if ($LASTEXITCODE -ne 0) { throw "Asset-Upload fehlgeschlagen" }
+          gh release upload $tag "dist/SHA256SUMS-dev-latest.txt" --clobber
+          if ($LASTEXITCODE -ne 0) { throw "Checksum-Upload fehlgeschlagen" }
