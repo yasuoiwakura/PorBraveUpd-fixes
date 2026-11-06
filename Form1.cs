@@ -275,88 +275,120 @@ namespace Brave_Updater
         }
         private async void Button1_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 0, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(0, 0, 0, 1);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(0, 0, 1);
             }
         }
         private async void Button2_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 1, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(1, 1, 0, 2);
             }
-            if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(1, 0, 2);
             }
         }
         private async void Button3_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 2, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(2, 2, 0, 3);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(2, 0, 3);
             }
         }
         private async void Button4_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 3, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(3, 3, 0, 4);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(3, 0, 4);
             }
         }
         private async void Button5_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 4, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(4, 4, 1, 5);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(4, 1, 5);
             }
         }
         private async void Button6_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 5, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(5, 5, 1, 6);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(5, 1, 6);
             }
         }
         private async void Button7_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 6, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(6, 6, 1, 7);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(6, 1, 7);
             }
         }
         private async void Button8_Click(object sender, EventArgs e)
         {
+            if (TryLaunchIfCurrent((Button)sender, 7, checkBox3.Checked))
+            {
+                return;
+            }
             if (checkBox3.Checked)
             {
                 await NewMethod(7, 7, 1, 8);
             }
-            else if (!checkBox3.Checked)
+            else
             {
                 await NewMethod1(7, 1, 8);
             }
@@ -364,6 +396,75 @@ namespace Brave_Updater
         private async void Button9_Click(object sender, EventArgs e)
         {
             await Testing();
+        }
+
+        private bool TryLaunchIfCurrent(Button button, int index, bool perVersionFolders)
+        {
+            if (button.BackColor == Color.Green)
+            {
+                if (!IsBraveRunning())
+                {
+                    LaunchEdition(index, !perVersionFolders);
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        private void LaunchEdition(int index, bool singleFolder)
+        {
+            string dir = singleFolder ? "Brave" : instDir[index];
+            string launcher = Path.Combine(applicationPath, singleFolder ? "Brave Launcher.exe" : dir + " Launcher.exe");
+            string braveExe = Path.Combine(applicationPath, dir, "Brave.exe");
+            string profile = Path.Combine(applicationPath, dir, "profile");
+
+            try
+            {
+                if (File.Exists(launcher))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = launcher,
+                        WorkingDirectory = applicationPath,
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+
+                if (File.Exists(braveExe))
+                {
+                    string arguments = "--user-data-dir=\"" + profile + "\"";
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = braveExe,
+                        Arguments = arguments,
+                        WorkingDirectory = applicationPath,
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+
+                ShowLaunchFailed((culture1.TwoLetterISOLanguageName == "de" ? "Nicht gefunden: " : "Not found: ") + launcher + Environment.NewLine + braveExe);
+            }
+            catch (Exception ex)
+            {
+                ShowLaunchFailed(ex.Message);
+            }
+        }
+
+        private void ShowLaunchFailed(string detail)
+        {
+            string message = culture1.TwoLetterISOLanguageName == "de"
+                ? "Brave konnte nicht gestartet werden."
+                : "Could not start Brave.";
+
+            if (!string.IsNullOrEmpty(detail))
+            {
+                message += Environment.NewLine + detail;
+            }
+
+            MessageBox.Show(message, "Portable Brave Updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         private async Task Testing()
         {

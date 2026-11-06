@@ -46,7 +46,7 @@ Planned core features:
 | `08-PORTABLEAPPS-INTEGRATION.md` | Planned PortableApps.com integration, options and findings |
 | `09-PAF-FUTURE.md` | Future full PAF build, naming, self-update policy and launcher adapters |
 | `RELEASES.md` | Release index and note on milestones |
-| `RELEASE-NOTES-1.3.37.md` | Release notes for 1.3.37 |
+| `RELEASE-NOTES-1.4.10.md` | Release notes for 1.4.10 |
 | `RELEASE-NOTES-1.3.3.37.md` | Release notes for 1.3.3.37 |
 | `RELEASE-NOTES-1.3.3.7.md` | Release notes for 1.3.3.7 |
 | `../CHANGELOG.md` | Release history |
@@ -62,9 +62,9 @@ Planned core features:
 - Retargeting to .NET Framework 4.8: done (2026-11-02)
 - GitHub URLs switched to fork: done (2026-11-02)
 - Launchers at 1.3.3.7 and `Launcher.7z` rebuilt: done (2026-11-02)
-- Updater version: 1.3.37
+- Updater version: 1.4.10
 - Build: successful (2026-11-02)
-- Local release package: `dist/Portable.Brave.Updater.v1.3.37.7z`
+- Local release package: `dist/Portable.Brave.Updater.v1.4.10.7z`
 - GitHub Actions: `build`, `ci` (PR/manual), `nightly` (changed `dev` only) and `release`; dev builds are artifacts
 - CLI implementation: done (MVP)
 - CLI smoke tests: `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log`, `--wait-for-brave` (2026-11-02)

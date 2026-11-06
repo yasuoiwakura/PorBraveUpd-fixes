@@ -116,7 +116,7 @@ namespace Brave_Updater
         private static readonly int[] IconSizes = new int[] { 16, 32, 75, 128, 256 };
         private static readonly int[] IcoSizes = new int[] { 16, 24, 32, 48, 64, 128, 256 };
 
-        public static void Write(string appPath, PortableAppsSettings settings, out string report)
+        public static void Write(string appPath, PortableAppsSettings settings, bool backup, out string report)
         {
             if (settings == null)
             {
@@ -144,26 +144,12 @@ namespace Brave_Updater
                 }
             }
 
-            string backupDir = BackupExisting(appPath);
+            string backupDir = backup ? BackupExisting(appPath) : null;
             string appInfoDir = Path.Combine(appPath, "App", "AppInfo");
             Directory.CreateDirectory(appInfoDir);
 
             var generated = new List<string>();
-            string updaterBatch = Path.Combine(appPath, "PortableAppsUpdater-stable-x64.bat");
-            string startBatch = Path.Combine(appPath, "PortableAppsStart-stable-x64.bat");
             string updateBatch = Path.Combine(appPath, "PortableAppsUpdate-stable-x64.bat");
-
-            if (settings.IncludeUpdaterApp)
-            {
-                WriteBatch(updaterBatch, "\"Portable Brave Updater.exe\" %*");
-                generated.Add(updaterBatch);
-            }
-
-            if (settings.IncludeLauncher)
-            {
-                WriteBatch(startBatch, "\"" + launcherRelative + "\" %*");
-                generated.Add(startBatch);
-            }
 
             if (settings.IncludeUpdater)
             {
@@ -221,7 +207,8 @@ namespace Brave_Updater
 
         private static string BuildAppInfo(string appPath, PortableAppsSettings settings)
         {
-            var entries = BuildEntries(settings);
+            string launcherRelative = settings.IncludeLauncher ? ResolveLauncher(appPath) : null;
+            var entries = BuildEntries(settings, launcherRelative);
             if (entries.Count == 0)
             {
                 throw new InvalidOperationException("Select at least one PortableApps entry.");
@@ -230,7 +217,7 @@ namespace Brave_Updater
             string version = FileVersionInfo.GetVersionInfo(Path.Combine(appPath, "Portable Brave Updater.exe")).FileVersion;
             if (string.IsNullOrEmpty(version))
             {
-                version = "1.3.37";
+                version = "1.4.10";
             }
             version = NormalizeVersion(version);
 
@@ -260,10 +247,10 @@ namespace Brave_Updater
             builder.AppendLine("[Version]");
                 builder.AppendLine("PackageVersion=" + version);
                 builder.AppendLine();
-            string mainStart = settings.IncludeLauncher
-                ? "PortableAppsStart-stable-x64.bat"
+            string mainStart = settings.IncludeLauncher && launcherRelative != null
+                ? launcherRelative
                 : (settings.IncludeUpdaterApp
-                    ? "PortableAppsUpdater-stable-x64.bat"
+                    ? "Portable Brave Updater.exe"
                     : "PortableAppsUpdate-stable-x64.bat");
 
             builder.AppendLine("[Control]");
@@ -282,16 +269,16 @@ namespace Brave_Updater
             return builder.ToString();
         }
 
-        private static List<Entry> BuildEntries(PortableAppsSettings settings)
+        private static List<Entry> BuildEntries(PortableAppsSettings settings, string launcherRelative)
         {
             var entries = new List<Entry>();
             if (settings.IncludeUpdaterApp)
             {
-                entries.Add(new Entry("PortableAppsUpdater-stable-x64.bat", "Portable Brave Updater", "updater", null));
+                entries.Add(new Entry("Portable Brave Updater.exe", "Portable Brave Updater", "updater", null));
             }
-            if (settings.IncludeLauncher)
+            if (settings.IncludeLauncher && launcherRelative != null)
             {
-                entries.Add(new Entry("PortableAppsStart-stable-x64.bat", "Brave", "brave", FormatEditionDescription(settings.Edition)));
+                entries.Add(new Entry(launcherRelative, "Brave", "brave", FormatEditionDescription(settings.Edition)));
             }
             if (settings.IncludeUpdater)
             {
@@ -386,7 +373,7 @@ namespace Brave_Updater
                     : (settings.IncludeUpdaterApp ? updater : updateEntry);
 
                 WriteIconSet(appInfoDir, "appicon", mainIcon);
-                List<Entry> entries = BuildEntries(settings);
+                List<Entry> entries = BuildEntries(settings, settings.IncludeLauncher ? ResolveLauncher(appPath) : null);
                 for (int i = 0; i < entries.Count; i++)
                 {
                     IconSource icon = entries[i].Icon == "updater"

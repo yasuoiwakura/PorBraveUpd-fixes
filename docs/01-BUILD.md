@@ -271,11 +271,11 @@ Dev artifact:
 Release:
 
 - trigger only on tag `v*`
-- verifies tag, `Version.txt`, `AssemblyFileVersion` and asset name
+- verifies tag, `Version.txt`, `AssemblyFileVersion`, asset name and that release docs exist
 - uploads `.7z` and `SHA256SUMS.txt`
 - does not commit `Version.txt`
 - tag must point to `master`; the updater reads `Version.txt` from `master`
-- release notes are read from `docs/RELEASE-NOTES-<Version>.md` if present
+- release notes are read from `docs/RELEASE-NOTES-<Version>.md` (required)
 - the workflow appears in the Actions list once `release.yml` is on the default branch `master` and/or a `v*` tag is pushed
 
 Note: `windows-latest` normally includes VS 2022 and .NET Framework 4.8. The workflow verifies this and fails with a clear message otherwise.
@@ -331,8 +331,8 @@ Main project:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.37
-Size: 143360 bytes
+FileVersion: 1.4.10
+Size: 144384 bytes
 ```
 
 Launchers: all nine projects built successfully.
@@ -348,7 +348,7 @@ https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher
 Local release package:
 
 ```text
-dist/Portable.Brave.Updater.v1.3.37.7z
+dist/Portable.Brave.Updater.v1.4.10.7z
 Checksum: see dist/SHA256SUMS.txt
 ```
 
