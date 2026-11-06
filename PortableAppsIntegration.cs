@@ -116,7 +116,7 @@ namespace Brave_Updater
         private static readonly int[] IconSizes = new int[] { 16, 32, 75, 128, 256 };
         private static readonly int[] IcoSizes = new int[] { 16, 24, 32, 48, 64, 128, 256 };
 
-        public static void Write(string appPath, PortableAppsSettings settings, out string report)
+        public static void Write(string appPath, PortableAppsSettings settings, bool backup, out string report)
         {
             if (settings == null)
             {
@@ -144,7 +144,7 @@ namespace Brave_Updater
                 }
             }
 
-            string backupDir = BackupExisting(appPath);
+            string backupDir = backup ? BackupExisting(appPath) : null;
             string appInfoDir = Path.Combine(appPath, "App", "AppInfo");
             Directory.CreateDirectory(appInfoDir);
 

@@ -11,6 +11,7 @@ namespace Brave_Updater
         private readonly CheckBox includeLauncher;
         private readonly CheckBox includeUpdater;
         private readonly ComboBox updateIcon;
+        private readonly CheckBox backupFiles;
         private readonly Button writeButton;
 
         public PortableAppsSettingsForm(string appPath)
@@ -86,6 +87,14 @@ namespace Brave_Updater
                 Text = "PortableApps cannot reliably track Brave or close it with the Platform. '" + updateName + "' is experimental."
             };
 
+            backupFiles = new CheckBox
+            {
+                AutoSize = true,
+                Location = new Point(12, 235),
+                Text = "Backup der bisherigen Dateien (nicht empfohlen)",
+                Checked = false
+            };
+
             writeButton = new Button
             {
                 Location = new Point(12, 265),
@@ -108,6 +117,7 @@ namespace Brave_Updater
             Controls.Add(includeUpdater);
             Controls.Add(updateIcon);
             Controls.Add(warning);
+            Controls.Add(backupFiles);
             Controls.Add(writeButton);
             Controls.Add(closeButton);
 
@@ -138,7 +148,7 @@ namespace Brave_Updater
             try
             {
                 string report;
-                PortableAppsIntegration.Write(appPath, settings, out report);
+                PortableAppsIntegration.Write(appPath, settings, backupFiles.Checked, out report);
                 MessageBox.Show(
                     this,
                     report + Environment.NewLine + Environment.NewLine + "Now run Apps > Refresh App Icons or restart the PortableApps Platform.",

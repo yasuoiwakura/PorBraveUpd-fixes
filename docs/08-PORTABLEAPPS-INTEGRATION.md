@@ -26,7 +26,7 @@ The updater GUI now has a **PortableApps...** button. It opens a small settings 
 - `PortableAppsUpdate-stable-x64.bat` (update-then-start entry only)
 - `PortableBraveUpdater.ini`
 
-The generator backs up existing `App\AppInfo`, the generated batch and the settings file before overwriting. Icons are generated from the high-resolution icons embedded in `Brave\Brave.exe` and the updater EXE, with the Brave logo as fallback. The ICO files contain 16, 24, 32, 48, 64, 128 and 256 pixel frames at 32-bit color; the PNG sidecars are 32-bit. No raster files need to be shipped in the package.
+The generator overwrites `App\AppInfo`, the generated batch and the settings file directly. A backup of the previous files is optional via the unchecked dialog option "Backup der bisherigen Dateien (nicht empfohlen)"; legacy start batches are only included in that backup and not regenerated. Icons are generated from the high-resolution icons embedded in `Brave\Brave.exe` and the updater EXE, with the Brave logo as fallback. The ICO files contain 16, 24, 32, 48, 64, 128 and 256 pixel frames at 32-bit color; the PNG sidecars are 32-bit. No raster files need to be shipped in the package.
 
 The dialog exposes three menu entries:
 

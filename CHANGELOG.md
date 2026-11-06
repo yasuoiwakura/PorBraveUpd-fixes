@@ -19,6 +19,7 @@ Incremental release on top of `1.3.37`. Replaces the withdrawn interim versions 
 - CI no longer auto-builds on `master`/`dev` pushes; pull requests and manual dispatch still build.
 - `build.yml` accepts `ref` and `channel` inputs; `BUILD-INFO.txt` now records commit SHA, ref and channel.
 - Generated `appinfo.ini` no longer uses start batches: `Start`/`StartN` for the updater and launcher entries point directly at the EXEs (unquoted; spaces are allowed, double quotes are forbidden per PAF 3.9). Only the update-then-start entry keeps a batch because it passes arguments. Legacy start batches are backed up and not regenerated.
+- PortableApps generation no longer backs up previous files by default; an optional unchecked dialog checkbox ("Backup der bisherigen Dateien (nicht empfohlen)") enables it.
 
 ### Fixed
 
