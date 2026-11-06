@@ -331,8 +331,8 @@ Main project:
 
 ```text
 bin\Release\Portable Brave Updater.exe
-FileVersion: 1.3.37
-Size: 143360 bytes
+FileVersion: 1.33.7
+Size: 144384 bytes
 ```
 
 Launchers: all nine projects built successfully.
@@ -348,7 +348,7 @@ https://raw.githubusercontent.com/yasuoiwakura/PorBraveUpd-fixes/master/Launcher
 Local release package:
 
 ```text
-dist/Portable.Brave.Updater.v1.3.37.7z
+dist/Portable.Brave.Updater.v1.33.7.7z
 Checksum: see dist/SHA256SUMS.txt
 ```
 

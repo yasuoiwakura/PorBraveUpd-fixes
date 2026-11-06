@@ -1,4 +1,4 @@
-# Portable Brave Updater 1.3.37
+# Portable Brave Updater 1.33.7
 
 PortableApps integration and runtime-dependency release. Builds on the released `1.3.3.37` CLI.
 
@@ -16,6 +16,7 @@ PortableApps integration and runtime-dependency release. Builds on the released 
 - Generated batches avoid spaces and arguments in `appinfo.ini` `Start` values.
 - The static `PortableAppsUpdate.bat` was removed. The app generates `PortableAppsStart-stable-x64.bat` and `PortableAppsUpdate-stable-x64.bat`.
 - Transparent runtime dependency preflight for GUI and CLI. Missing files are reported by exact path before download or extraction.
+- A green (up-to-date) edition button now starts the matching Brave edition when Brave is not running.
 - New CLI exit code `7` for missing runtime files.
 
 ## Validation
@@ -26,15 +27,15 @@ PortableApps integration and runtime-dependency release. Builds on the released 
 
 ## Notes
 
-- Updater version is `1.3.37`.
+- Updater version is `1.33.7`.
 - Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
 - `Portable Brave Updater.exe` is not standalone. Keep `Bin\7zr.exe` and `Bin\Launcher\`.
 - No code signing; self-update without hash verification.
-- Release asset: `Portable.Brave.Updater.v1.3.37.7z`.
+- Release asset: `Portable.Brave.Updater.v1.33.7.7z`.
 
 ## Package
 
-- Portable Brave Updater `1.3.37`
+- Portable Brave Updater `1.33.7`
 - `Bin/7zr.exe`
 - `Bin/Launcher/*.exe` (`1.3.3.7`)
 - `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.txt`

@@ -57,7 +57,7 @@ The choice is stored as `UpdateIcon=updater|brave` in `PortableBraveUpdater.ini`
 
 Background: `appinfo.ini` `Start` is treated as a file path by the Platform. It does not parse quoted paths or arguments, so the generated no-space batches are required.
 
-Live deployment on 2026-11-02 uses updater `1.3.37`. The generated `appinfo.ini` has `PackageVersion=1.3.37.0`; `DisplayVersion` is intentionally omitted so the Platform does not show the updater version next to the Brave entries. `PackageVersion` remains for PAF/installer versioning. The ICO files were regenerated with 16, 24, 32, 48, 64, 128 and 256 pixel 32-bit frames. Backup before final 1.3.37 regeneration: `PortableApps-backup-20261102-220232-734`; previous EXE backup: `Portable Brave Updater.exe.bak-20261102-220232`. Current live settings: `IncludeUpdaterApp=true`, `IncludeLauncher=true`, `IncludeUpdater=true`, `UpdateIcon=updater`.
+Live deployment on 2026-11-02 uses updater `1.33.7`. The generated `appinfo.ini` has `PackageVersion=1.33.7.0`; `DisplayVersion` is intentionally omitted so the Platform does not show the updater version next to the Brave entries. `PackageVersion` remains for PAF/installer versioning. The ICO files were regenerated with 16, 24, 32, 48, 64, 128 and 256 pixel 32-bit frames. Backup before final 1.33.7 regeneration: `PortableApps-backup-20261106-104018-797`; previous EXE backup: `Portable Brave Updater.exe.bak-20261106-104018`. Current live settings: `IncludeUpdaterApp=true`, `IncludeLauncher=true`, `IncludeUpdater=true`, `UpdateIcon=updater`.
 
 ### 1.2 Earlier manual prototype
 
