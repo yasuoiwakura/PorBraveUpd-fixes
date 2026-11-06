@@ -68,7 +68,7 @@ Used for:
 Important:
 
 - Self-update is still active but points to the fork.
-- The fork's updater and `Version.txt` are at `1.33.7`; a 1.33.7 build therefore does not offer a self-update.
+- The fork's updater and `Version.txt` are at `1.4.10`; a 1.4.10 build therefore does not offer a self-update.
 - Older 1.3.0.0 builds can update only after the matching release asset exists.
 - Before bumping the version, publish `Portable.Brave.Updater.v<Version>.7z` under the fork; otherwise the self-update download fails.
 - Self-update can be disabled later if desired.
@@ -90,15 +90,15 @@ Keep these consistent:
 | `Version.txt` | Version read by self-update |
 | `Launcher/Version.txt` | Launcher update version, currently `1.3.3.7` |
 | `Launcher/Launcher.7z` | Launcher archive used by `CheckLauncher()` |
-| Release tag | e.g. `v1.33.7` |
-| Release asset | `Portable.Brave.Updater.v1.33.7.7z` |
+| Release tag | e.g. `v1.4.10` |
+| Release asset | `Portable.Brave.Updater.v1.4.10.7z` |
 | Dev artifact | Timestamped Actions artifact, not self-update capable |
 
 Recommendation: keep semantic versioning or the existing four-part .NET version.
 
 Important:
 
-- The updater is at `1.33.7`; the launchers remain at `1.3.3.7`.
+- The updater is at `1.4.10`; the launchers remain at `1.3.3.7`.
 - Before a stable release, set `Version.txt` and `AssemblyFileVersion` of the updater to the same new version.
 - Dev artifacts must never change `Version.txt`.
 
@@ -153,7 +153,7 @@ Important:
 
 ### Git tag and push
 
-Replace `<version>` with the release version, for example `1.33.7`.
+Replace `<version>` with the release version, for example `1.4.10`.
 
 1. Check the tag target:
 

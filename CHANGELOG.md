@@ -2,31 +2,9 @@
 
 All notable changes to this fork.
 
-## 1.33.37 - 2026-11-06
+## 1.4.10 - 2026-11-06
 
-Incremental release on top of `1.33.7`.
-
-### Fixed
-
-- Green-button launch used an inverted single-folder/per-version flag: in single-folder installs the button looked for `Brave Stable x64` paths and failed with "Brave konnte nicht gestartet werden." without details. The CLI `--launch-brave` path (auto-detected layout) was unaffected. Launch failures now list the paths that were checked.
-
-### Changed
-
-- Updater version is `1.33.37`.
-- Generated `appinfo.ini` no longer uses start batches: `Start`/`StartN` for the updater and launcher entries point directly at the EXEs (unquoted; spaces are allowed, double quotes are forbidden per PAF 3.9). Only the update-then-start entry keeps a batch because it passes arguments. Legacy start batches are backed up and not regenerated.
-
-### Validation
-
-- Local build passed. Platform menu launch (direct EXE `Start` values) remains a manual test.
-
-### Notes
-
-- No code signing; self-update without hash verification.
-- Release asset: `Portable.Brave.Updater.v1.33.37.7z`.
-
-## 1.33.7 - 2026-11-06
-
-Incremental release on top of `1.3.37`. PortableApps integration and runtime dependency preflight are listed under `1.3.37`.
+Incremental release on top of `1.3.37`. Replaces the withdrawn interim versions `1.33.7` and `1.33.37`; all changes after `1.3.37` are attributed to this release.
 
 ### Added
 
@@ -36,19 +14,24 @@ Incremental release on top of `1.3.37`. PortableApps integration and runtime dep
 
 ### Changed
 
-- Updater version is `1.33.7`.
+- Updater version is `1.4.10`.
 - Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
 - CI no longer auto-builds on `master`/`dev` pushes; pull requests and manual dispatch still build.
 - `build.yml` accepts `ref` and `channel` inputs; `BUILD-INFO.txt` now records commit SHA, ref and channel.
+- Generated `appinfo.ini` no longer uses start batches: `Start`/`StartN` for the updater and launcher entries point directly at the EXEs (unquoted; spaces are allowed, double quotes are forbidden per PAF 3.9). Only the update-then-start entry keeps a batch because it passes arguments. Legacy start batches are backed up and not regenerated.
+
+### Fixed
+
+- Green-button launch used an inverted single-folder/per-version flag: in single-folder installs the button looked for `Brave Stable x64` paths and failed with "Brave konnte nicht gestartet werden." without details. The CLI `--launch-brave` path (auto-detected layout) was unaffected. Launch failures now list the paths that were checked.
 
 ### Validation
 
-- Local build passed. Real update download and green-button launch remain manual tests.
+- Local build passed. Real update download, green-button launch and Platform menu launch remain manual tests.
 
 ### Notes
 
 - No code signing; self-update without hash verification.
-- Release asset: `Portable.Brave.Updater.v1.33.7.7z`.
+- Release asset: `Portable.Brave.Updater.v1.4.10.7z`.
 
 ## 1.3.37 - 2026-11-02
 

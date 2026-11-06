@@ -170,6 +170,8 @@ Open:
 
 `1.3.3.37` was released earlier on 2026-11-02. The PortableApps integration and runtime dependency preflight are part of `1.33.7`.
 
+2026-11-06: The interim versions `1.33.7` and `1.33.37` are withdrawn; all changes after `1.3.37` ship as `1.4.10`. `1.33.x` build and asset names in this log refer to what became `1.4.10`.
+
 CLI MVP implemented and locally verified with `--help`, `--version`, invalid arguments, `--check`, `--dry-run`, `--quiet`, `--log` and `--wait-for-brave`.
 
 Already produced:

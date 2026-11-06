@@ -217,7 +217,7 @@ namespace Brave_Updater
             string version = FileVersionInfo.GetVersionInfo(Path.Combine(appPath, "Portable Brave Updater.exe")).FileVersion;
             if (string.IsNullOrEmpty(version))
             {
-                version = "1.33.37";
+                version = "1.4.10";
             }
             version = NormalizeVersion(version);
 
