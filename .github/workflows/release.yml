@@ -44,6 +44,12 @@ jobs:
           if (-not $archive) { throw "Release-Archiv fehlt" }
           $expected = "Portable.Brave.Updater.v$tagVersion.7z"
           if ($archive.Name -ne $expected) { throw "Assetname $($archive.Name) != $expected" }
+          $notesFile = "docs/RELEASE-NOTES-$tagVersion.md"
+          if (-not (Test-Path -LiteralPath $notesFile)) { throw "Missing release notes: $notesFile" }
+          $changelog = Get-Content -LiteralPath "CHANGELOG.md" -Raw
+          if ($changelog -notmatch "(?m)^## $([regex]::Escape($tagVersion)) ") { throw "Missing CHANGELOG section for $tagVersion" }
+          $releases = Get-Content -LiteralPath "docs/RELEASES.md" -Raw
+          if ($releases -notmatch "(?m)^\| $([regex]::Escape($tagVersion)) \|") { throw "Missing RELEASES row for $tagVersion" }
           "Version OK: $tagVersion"
 
       - name: Create GitHub release

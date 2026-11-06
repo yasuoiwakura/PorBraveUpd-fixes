@@ -6,6 +6,7 @@ GitHub Milestones are not used for this project. Releases are created from tags 
 
 | Version | Date | Notes |
 |---|---|---|
-| 1.33.7 | 2026-11-02 | [RELEASE-NOTES-1.33.7.md](RELEASE-NOTES-1.33.7.md) |
+| 1.33.7 | 2026-11-06 | [RELEASE-NOTES-1.33.7.md](RELEASE-NOTES-1.33.7.md) |
+| 1.3.37 | 2026-11-02 | [RELEASE-NOTES-1.3.37.md](RELEASE-NOTES-1.3.37.md) |
 | 1.3.3.37 | 2026-11-02 | [RELEASE-NOTES-1.3.3.37.md](RELEASE-NOTES-1.3.3.37.md) |
 | 1.3.3.7 | 2026-11-02 | [RELEASE-NOTES-1.3.3.7.md](RELEASE-NOTES-1.3.3.7.md) |

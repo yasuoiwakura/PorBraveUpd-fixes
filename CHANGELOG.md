@@ -2,9 +2,35 @@
 
 All notable changes to this fork.
 
-## 1.33.7 - 2026-11-02
+## 1.33.7 - 2026-11-06
 
-PortableApps integration and runtime-dependency release.
+Incremental release on top of `1.3.37`. PortableApps integration and runtime dependency preflight are listed under `1.3.37`.
+
+### Added
+
+- A green (up-to-date) edition button starts the matching Brave edition if Brave is not already running, instead of showing the "same version" message.
+- New `release-help.bat`: checks branch, `Version.txt` and dirty working tree, then prints the correct release steps.
+- New nightly workflow builds `dev` daily (03:00 UTC) only when dev changed since the last successful nightly; manual dispatch can force a build.
+
+### Changed
+
+- Updater version is `1.33.7`.
+- Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
+- CI no longer auto-builds on `master`/`dev` pushes; pull requests and manual dispatch still build.
+- `build.yml` accepts `ref` and `channel` inputs; `BUILD-INFO.txt` now records commit SHA, ref and channel.
+
+### Validation
+
+- Local build passed. Real update download and green-button launch remain manual tests.
+
+### Notes
+
+- No code signing; self-update without hash verification.
+- Release asset: `Portable.Brave.Updater.v1.33.7.7z`.
+
+## 1.3.37 - 2026-11-02
+
+PortableApps integration and runtime-dependency release. Builds on the released `1.3.3.37` CLI.
 
 ### Added
 
@@ -13,20 +39,10 @@ PortableApps integration and runtime-dependency release.
 
 ### Changed
 
-- Updater version is `1.33.7`.
+- Updater version is `1.3.37`.
 - Launchers remain at `1.3.3.7`; `Launcher.7z` is unchanged.
-- The static `PortableAppsUpdate.bat` was removed. The app now generates `PortableAppsUpdate-stable-x64.bat` and `PortableAppsStart-stable-x64.bat`.
-- PortableApps icons use the Brave icon for the launcher entries and the updater icon for the update entry.
-- PortableApps ICO files now contain multi-resolution 32-bit frames (16-256 px) extracted from the high-resolution EXE icons, fixing pixelated and low-color-depth menu icons.
-- PortableApps dialog now has three menu entries: `Portable Brave Updater`, `Brave` and `Brave (newest stable)`; the icon dropdown sits directly next to `Brave (newest stable)`. The update entry name is derived from the selected edition.
-- PortableApps dialog lets you choose the update entry icon (`Updater icon` or `Brave icon`). The choice is saved as `UpdateIcon` in `PortableBraveUpdater.ini`.
-- Menu icons follow the selected entries: `appicon` for the main entry and `appicon1..N` for `Start1..N`.
-- Menu descriptions clarify the Brave entries: `stable, x64` for `Brave` and `Update Brave, then start Brave` for `Brave (newest stable)`.
-- `DisplayVersion` is omitted from the generated appinfo so the Platform does not show the updater version beside the Brave entries; `PackageVersion` remains.
-- CI now runs for pull requests and manual dispatch; `dev`/`master` pushes no longer start an automatic build.
-- New nightly workflow builds `dev` only when changes exist since the last successful nightly; manual dispatch can force a build.
-- A green (up-to-date) edition button now starts the matching Brave edition if Brave is not already running, instead of showing the "same version" message.
-- Shortened the PortableApps dialog text and moved the experimental/tracking note into a compact warning.
+- PortableApps dialog, icons, menu entries and descriptions were added (see release notes).
+- `DisplayVersion` is omitted from the generated appinfo; `PackageVersion` remains.
 
 ### Validation
 
@@ -35,7 +51,7 @@ PortableApps integration and runtime-dependency release.
 ### Notes
 
 - No code signing; self-update without hash verification.
-- Release asset: `Portable.Brave.Updater.v1.33.7.7z`.
+- Release asset: `Portable.Brave.Updater.v1.3.37.7z`.
 
 ## 1.3.3.37 - 2026-11-02
 

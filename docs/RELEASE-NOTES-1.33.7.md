@@ -1,29 +1,22 @@
 # Portable Brave Updater 1.33.7
 
-PortableApps integration and runtime-dependency release. Builds on the released `1.3.3.37` CLI.
+Incremental release on top of `1.3.37`. The PortableApps integration dialog and the
+runtime dependency preflight shipped with `1.3.37` (see RELEASE-NOTES-1.3.37.md);
+this release covers launch behavior, release tooling and CI workflows only.
 
-## Highlights
+## Highlights (delta over 1.3.37)
 
-- PortableApps integration dialog: generates `appinfo.ini`, icons, no-space start/update batches and a settings file.
-- Existing `App\AppInfo`, generated batches and settings are backed up before writing.
-- Launcher entries use the Brave icon; the update entry uses the updater icon.
-- ICO files contain multi-resolution 32-bit frames (16-256 px) from the high-resolution EXE icons, fixing pixelated and low-color-depth menu icons.
-- New PortableApps menu entry `Portable Brave Updater`, plus `Brave` and `Brave (newest stable)` for the selected build. The icon dropdown sits next to `Brave (newest stable)`; the name is derived from the selected edition.
-- The update entry icon is selectable: `Updater icon` or `Brave icon`; the choice is stored as `UpdateIcon` in `PortableBraveUpdater.ini`.
-- Menu icons follow the selected entries: `appicon` for the main entry and `appicon1..N` for `Start1..N`.
-- Menu descriptions clarify the Brave entries: `stable, x64` and `Update Brave, then start Brave`; `DisplayVersion` is omitted so the updater version is not shown beside the Brave entries.
-- The PortableApps dialog text was shortened; the experimental/tracking note is now a compact warning.
-- Generated batches avoid spaces and arguments in `appinfo.ini` `Start` values.
-- The static `PortableAppsUpdate.bat` was removed. The app generates `PortableAppsStart-stable-x64.bat` and `PortableAppsUpdate-stable-x64.bat`.
-- Transparent runtime dependency preflight for GUI and CLI. Missing files are reported by exact path before download or extraction.
-- A green (up-to-date) edition button now starts the matching Brave edition when Brave is not running.
-- New CLI exit code `7` for missing runtime files.
+- A green (up-to-date) edition button now starts the matching Brave edition when Brave is not already running, instead of only showing the "same version" message.
+- New `release-help.bat`: checks branch, `Version.txt` and dirty working tree, then prints the correct release steps.
+- New `nightly` workflow: builds `dev` daily (03:00 UTC) only when dev changed since the last successful nightly; `workflow_dispatch` can force a build.
+- CI no longer auto-builds on `master`/`dev` pushes; builds run on pull requests and manual dispatch.
+- `build.yml` accepts `ref` and `channel` inputs; `BUILD-INFO.txt` now records commit SHA, ref and channel.
+- Version bumped from `1.3.37` to `1.33.7`.
 
 ## Validation
 
 - Local build passed.
-- CLI preflight tests passed for missing `Bin\7zr.exe` and missing launcher files.
-- A real update download and Platform entry test remain manual.
+- A real update download and a real Brave launch from the green button remain manual tests.
 
 ## Notes
 
