@@ -20,35 +20,62 @@ if "%BRANCH%"=="main" set "CASE=main"
 if defined DIRTY set "CASE=dirty"
 
 if "%CASE%"=="dirty" (
+    echo.
     echo REM uncommitted changes - commit first
     echo git status
     echo git add -A
     echo git commit -m "COMMITMESSAGE"
+    echo.
+    echo git checkout dev
+    echo git merge --squash %BRANCH%
+    echo.
     goto :eof
 )
 
 if "%CASE%"=="feature" (
+    echo.
     echo git checkout dev
     echo git merge --squash %BRANCH%
+    echo.
     echo git push github dev
+    echo git checkout master
+    echo git merge dev
+    echo git push github master
+    echo git tag -a v%VERSION% -m "Release %VERSION%"
+    echo git push github v%VERSION%
+    echo.
     goto :eof
 )
 
 if "%CASE%"=="dev" (
+    echo.
+    echo git push
+    echo.
     echo git checkout master
+    echo git merge dev
+    echo git push github master
     echo git tag -a v%VERSION% -m "Release %VERSION%"
     echo git push github v%VERSION%
+    echo.
     goto :eof
 )
 
 if "%CASE%"=="master" (
+    echo.
+    echo git merge dev
+    echo git push github master
     echo git tag -a v%VERSION% -m "Release %VERSION%"
     echo git push github v%VERSION%
+    echo.
     goto :eof
 )
 
 if "%CASE%"=="main" (
+    echo.
+    echo git merge dev
+    echo git push github main
     echo git tag -a v%VERSION% -m "Release %VERSION%"
     echo git push github v%VERSION%
+    echo.
     goto :eof
 )
