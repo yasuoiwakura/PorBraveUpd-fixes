@@ -1,7 +1,7 @@
 # 08 - PortableApps.com Integration (Planned Feature)
 
 Status: Phase 1 implemented; Platform launch test pending  
-Last updated: 2026-11-02
+Last updated: 2026-11-06
 
 ## 1. Summary
 
@@ -23,16 +23,15 @@ The updater GUI now has a **PortableApps...** button. It opens a small settings 
 
 - `App\AppInfo\appinfo.ini`
 - `appicon*.ico` and `appicon*_*.png`
-- `PortableAppsStart-stable-x64.bat`
-- `PortableAppsUpdate-stable-x64.bat`
+- `PortableAppsUpdate-stable-x64.bat` (update-then-start entry only)
 - `PortableBraveUpdater.ini`
 
-The generator backs up existing `App\AppInfo`, generated batches and the settings file before overwriting. Icons are generated from the high-resolution icons embedded in `Brave\Brave.exe` and the updater EXE, with the Brave logo as fallback. The ICO files contain 16, 24, 32, 48, 64, 128 and 256 pixel frames at 32-bit color; the PNG sidecars are 32-bit. No raster files need to be shipped in the package.
+The generator backs up existing `App\AppInfo`, the generated batch and the settings file before overwriting. Icons are generated from the high-resolution icons embedded in `Brave\Brave.exe` and the updater EXE, with the Brave logo as fallback. The ICO files contain 16, 24, 32, 48, 64, 128 and 256 pixel frames at 32-bit color; the PNG sidecars are 32-bit. No raster files need to be shipped in the package.
 
 The dialog exposes three menu entries:
 
-- `Portable Brave Updater` -> `PortableAppsUpdater-stable-x64.bat` -> `Start1`, `Name1`
-- `Brave` -> `PortableAppsStart-stable-x64.bat` -> `Start2`, `Name2`
+- `Portable Brave Updater` -> `Portable Brave Updater.exe` -> `Start1`, `Name1`
+- `Brave` -> `Brave Launcher.exe` -> `Start2`, `Name2`
 - `Brave (newest stable)` -> `PortableAppsUpdate-stable-x64.bat` -> `Start3`, `Name3`
 
 The `Brave (newest ...)` name is derived from `Edition`; the current build is `stable:x64`, producing `Brave (newest stable)`.
@@ -55,7 +54,7 @@ The update entry icon is selectable in the dialog:
 
 The choice is stored as `UpdateIcon=updater|brave` in `PortableBraveUpdater.ini`.
 
-Background: `appinfo.ini` `Start` is treated as a file path by the Platform. It does not parse quoted paths or arguments, so the generated no-space batches are required.
+Background: `appinfo.ini` `Start` is treated as a plain path by the Platform. The PAF 3.9 spec forbids double quotes in `[Control]` fields, and command-line arguments are not supported. Unquoted `Start` values may contain spaces (revalidated against the PAF 3.9 spec and the live test on 2026-11-06; the earlier failure was caused by quotes and arguments, not spaces). Since 1.33.37 the argument-free entries point directly at the EXEs; only the update-then-start entry needs a batch to pass arguments. The earlier no-space batches are backed up and not regenerated.
 
 Live deployment on 2026-11-02 uses updater `1.33.7`. The generated `appinfo.ini` has `PackageVersion=1.33.7.0`; `DisplayVersion` is intentionally omitted so the Platform does not show the updater version next to the Brave entries. `PackageVersion` remains for PAF/installer versioning. The ICO files were regenerated with 16, 24, 32, 48, 64, 128 and 256 pixel 32-bit frames. Backup before final 1.33.7 regeneration: `PortableApps-backup-20261106-104018-797`; previous EXE backup: `Portable Brave Updater.exe.bak-20261106-104018`. Current live settings: `IncludeUpdaterApp=true`, `IncludeLauncher=true`, `IncludeUpdater=true`, `UpdateIcon=updater`.
 
@@ -314,7 +313,7 @@ Rejected for now because:
 - The custom updater is required for Brave updates in this layout.
 - PAF would mainly be a one-time installation/menu helper for other users, not an update mechanism.
 - A wrapper executable is not worth the taskbar/process-tracking complexity.
-- `appinfo.ini` `Start` is treated as a file path by the Platform; quoted paths and arguments are not parsed reliably. Use no-space targets or a no-space batch/shim.
+- `appinfo.ini` `Start` is treated as a plain path; the PAF 3.9 spec forbids double quotes in `[Control]` fields and arguments are not supported. Unquoted values with spaces work; a batch/shim is only needed to pass arguments.
 - The official `.pap.ini` parameter mechanism is the reliable way to pass arguments to a non-PAF app, but it cannot select between two Start entries.
 
 ## 9. Open decisions

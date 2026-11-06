@@ -398,13 +398,13 @@ namespace Brave_Updater
             await Testing();
         }
 
-        private bool TryLaunchIfCurrent(Button button, int index, bool singleFolder)
+        private bool TryLaunchIfCurrent(Button button, int index, bool perVersionFolders)
         {
             if (button.BackColor == Color.Green)
             {
                 if (!IsBraveRunning())
                 {
-                    LaunchEdition(index, singleFolder);
+                    LaunchEdition(index, !perVersionFolders);
                 }
                 return true;
             }
@@ -445,7 +445,7 @@ namespace Brave_Updater
                     return;
                 }
 
-                ShowLaunchFailed(null);
+                ShowLaunchFailed((culture1.TwoLetterISOLanguageName == "de" ? "Nicht gefunden: " : "Not found: ") + launcher + Environment.NewLine + braveExe);
             }
             catch (Exception ex)
             {
