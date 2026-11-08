@@ -1318,10 +1318,30 @@ namespace Brave_Updater
                     var version = reader.ReadToEnd().Trim();
                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Brave Updater.exe");
                     versionLabel.Text = testm.FileVersion + "  >>> "+ version;
-                    if (IsNewerVersion(version, testm.FileVersion))
+                    int versionComparison = CompareVersions(version, testm.FileVersion);
+                    if (versionComparison > 0)
                     {
                         Controls.Add(groupBoxupdate);
                         groupBox1.Enabled = false;
+                    }
+                    else if (versionComparison < 0)
+                    {
+                        switch (culture1.TwoLetterISOLanguageName)
+                        {
+                            case "ru":
+                                infoLabel.Text = "Онлайн-версия старше установленной";
+                                break;
+                            case "de":
+                                infoLabel.Text = "Die Online-Version ist älter als die installierte Version";
+                                break;
+                            default:
+                                infoLabel.Text = "The online version is older than the installed version";
+                                break;
+                        }
+                        infoLabel.ForeColor = Color.Red;
+                        versionLabel.ForeColor = Color.Red;
+                        updateButton.Enabled = false;
+                        Controls.Add(groupBoxupdate);
                     }
                     reader.Close();
                 }
@@ -1368,14 +1388,45 @@ namespace Brave_Updater
         }
         private static bool IsNewerVersion(string candidate, string current)
         {
+            return CompareVersions(candidate, current) > 0;
+        }
+
+        private static int CompareVersions(string candidate, string current)
+        {
             Version candidateVersion;
             Version currentVersion;
             if (!Version.TryParse(candidate, out candidateVersion) || !Version.TryParse(current, out currentVersion))
             {
-                return false;
+                return 0;
             }
 
-            return candidateVersion > currentVersion;
+            for (int i = 0; i < 4; i++)
+            {
+                int result = GetVersionPart(candidateVersion, i).CompareTo(GetVersionPart(currentVersion, i));
+                if (result != 0)
+                {
+                    return result;
+                }
+            }
+
+            return 0;
+        }
+
+        private static int GetVersionPart(Version version, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return version.Major;
+                case 1:
+                    return version.Minor;
+                case 2:
+                    return version.Build < 0 ? 0 : version.Build;
+                case 3:
+                    return version.Revision < 0 ? 0 : version.Revision;
+                default:
+                    return 0;
+            }
         }
 
         private void CheckLauncher()

@@ -2,6 +2,14 @@
 
 All notable changes to this fork.
 
+## [Unreleased]
+
+### Changed
+
+- Self-update: when the online version is older than the installed one, show a red inline warning instead of no feedback; the update controls stay visible but the update button is disabled.
+- Version comparison now normalizes the component count, so `1.4.10` and `1.4.10.0` compare as equal.
+- Bumped updater version to `1.4.11`.
+
 ## 1.4.10 - 2026-11-06
 
 Incremental release on top of `1.3.37`. Replaces the withdrawn interim versions `1.33.7` and `1.33.37`; all changes after `1.3.37` are attributed to this release.
